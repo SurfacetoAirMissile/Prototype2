@@ -52,7 +52,7 @@ public class CameraScript : MonoBehaviour
         switch (mainCameraState)
         {
             case CameraStates.CAMERA_TRACKING:
-                MoveCameraTo(cameraPositions["Position 1"]);
+                
                 break;
             case CameraStates.CAMERA_MOVING:
                 PushCameraTowards(cameraMoveTarget);
@@ -63,6 +63,21 @@ public class CameraScript : MonoBehaviour
                 break;
             default:
                 break;
+        }
+
+        if (player.transform.position.x < -5.0F)
+        {
+            if (mainCameraState == CameraStates.CAMERA_TRACKING)
+            {
+                MoveCameraTo(cameraPositions["Position 1"]);
+            }
+        }
+        else if (player.transform.position.x > 5.0F)
+        {
+            if (mainCameraState == CameraStates.CAMERA_TRACKING)
+            {
+                MoveCameraTo(cameraPositions["Position 2"]);
+            }
         }
 
         LookAtPlayer();

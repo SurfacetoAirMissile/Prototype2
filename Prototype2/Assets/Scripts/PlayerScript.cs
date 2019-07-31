@@ -11,9 +11,10 @@ public class PlayerScript : MonoBehaviour
     public float jumpForce = 300.0f;
     public float speed = 10.0f;
     public float drag = 2.0f;
+    public GameObject cheesePrefab;
 
     // Private Variables
-    
+    private float misnomer = 0.0f;
 
     private void FixedUpdate()
     {
@@ -22,6 +23,9 @@ public class PlayerScript : MonoBehaviour
         vel.x *= (0.98f / drag);
         vel.z *= (0.98f / drag);
         this.GetComponent<Rigidbody>().velocity = vel;
+
+        // Update distance to ground
+        misnomer = this.GetComponent<BoxCollider>().bounds.extents.y;
 
         // Jump
         if (Input.GetKey(KeyCode.Space))
@@ -35,10 +39,10 @@ public class PlayerScript : MonoBehaviour
 
     void Jump()
     {
-        // If touching the ground (Colliding with ground collider)
-        if (this.GetComponent<BoxCollider>().bounds.Intersects(GameObject.Find("Floor").GetComponent<BoxCollider>().bounds))
+        // If touching the ground
+        if (Physics.Raycast(this.transform.position, -Vector3.up, misnomer + 0.1f))
         {
-            // Add jump force
+            // Jump
             this.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce);
         }
     }
@@ -52,5 +56,21 @@ public class PlayerScript : MonoBehaviour
         velocity = new Vector3(xSpeed, 0.0f, zSpeed);
 
         this.GetComponent<Rigidbody>().AddForce(velocity.normalized * speed, ForceMode.Acceleration);
+    }
+
+    // When collided with trigger object
+    private void OnTriggerEnter(Collider other)
+    {
+        // Collided with cheese
+        if (other.tag == "Cheese")
+        {
+            Destroy(other.gameObject);
+
+            Vector3 spawn = this.transform.position;
+            spawn.y += 1.0f;
+
+            GameObject newCheese = Instantiate(cheesePrefab, spawn, this.transform.rotation);
+            newCheese.transform.parent = this.transform;
+        }
     }
 }

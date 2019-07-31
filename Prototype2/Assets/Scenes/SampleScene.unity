@@ -244,9 +244,9 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   xSpeed: 0
   zSpeed: 0
-  jumpForce: 1000
+  jumpForce: 300
   speed: 100
-  drag: 10
+  drag: 2
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

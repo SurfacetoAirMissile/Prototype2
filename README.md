@@ -1,8 +1,13 @@
 # Prototype2
 
-TODO (31.7.19)
 
-- Programming
-  - thing 1
-  - thing 2
-  - thing 3
+TODO 31.7.19
+
+  - Programming
+
+    - Player can move
+
+
+    - Camera moves on track like system
+
+    - Player needs to get an object and bring it back to their "hole in the wall" before midnight

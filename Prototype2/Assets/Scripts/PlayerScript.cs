@@ -8,9 +8,9 @@ public class PlayerScript : MonoBehaviour
     public Vector3 velocity = new Vector3(0, 0, 0);
     public float xSpeed = 0.0f;
     public float zSpeed = 0.0f;
-    public float jumpForce = 1000.0f;
+    public float jumpForce = 300.0f;
     public float speed = 10.0f;
-    public float drag = 10.0f;
+    public float drag = 2.0f;
 
     // Private Variables
     

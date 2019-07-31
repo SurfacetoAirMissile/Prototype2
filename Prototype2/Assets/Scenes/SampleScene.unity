@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 339714975}
   - component: {fileID: 339714976}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,7 +222,7 @@ Rigidbody:
   m_GameObject: {fileID: 339714970}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 10
+  m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -244,7 +244,9 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   xSpeed: 0
   zSpeed: 0
+  jumpForce: 1000
   speed: 100
+  drag: 10
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

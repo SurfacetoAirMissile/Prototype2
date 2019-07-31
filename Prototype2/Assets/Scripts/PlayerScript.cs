@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.SceneManagement;
+
 public class PlayerScript : MonoBehaviour
 {
     // Public Variables
@@ -12,9 +14,11 @@ public class PlayerScript : MonoBehaviour
     public float speed = 10.0f;
     public float drag = 2.0f;
     public GameObject cheesePrefab;
+    public int equippedFood = 0;
 
     // Private Variables
     private float misnomer = 0.0f;
+    private int winCondition = 1;
 
     private void FixedUpdate()
     {
@@ -37,7 +41,7 @@ public class PlayerScript : MonoBehaviour
         Movement();
     }
 
-    void Jump()
+    private void Jump()
     {
         // If touching the ground
         if (Physics.Raycast(this.transform.position, -Vector3.up, misnomer + 0.1f))
@@ -48,7 +52,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     // Controls player movement
-    void Movement()
+    private void Movement()
     {
         xSpeed = Input.GetAxisRaw("Horizontal");
         zSpeed = Input.GetAxisRaw("Vertical");
@@ -64,13 +68,39 @@ public class PlayerScript : MonoBehaviour
         // Collided with cheese
         if (other.tag == "Cheese")
         {
+            // Destroy collectable
             Destroy(other.gameObject);
 
+            // Get spawn position
             Vector3 spawn = this.transform.position;
             spawn.y += 1.0f;
 
+            // Spawn cheese
             GameObject newCheese = Instantiate(cheesePrefab, spawn, this.transform.rotation);
             newCheese.transform.parent = this.transform;
+
+            // Add one food on player
+            equippedFood += 1;
+        }
+
+        // When player reaches home
+        if (other.tag == "Home")
+        {
+            // Check score for win
+            CheckWin();
+        }
+    }
+
+    private void CheckWin()
+    {
+        // If had more than a certain amount of food
+        if (equippedFood >= winCondition)
+        {
+            SceneManager.LoadScene("win");
+        }
+        else
+        {
+            SceneManager.LoadScene("lose");
         }
     }
 }

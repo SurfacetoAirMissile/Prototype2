@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Cheese
   - Floor
+  - Home
   layers:
   - Default
   - TransparentFX

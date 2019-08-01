@@ -6,6 +6,7 @@ using UnityEngine;
 public class CameraScript : MonoBehaviour
 {
     public GameObject player;
+    public GameObject zoneManagerObject;
     
     public Dictionary<string, Vector3> cameraPositions;
 
@@ -63,6 +64,9 @@ public class CameraScript : MonoBehaviour
                 break;
         }
 
+
+
+        /*
         if (player.transform.position.x < -5.0F)
         {
             MoveCameraTo(cameraPositions["Position 1"]);
@@ -71,7 +75,9 @@ public class CameraScript : MonoBehaviour
         {
             MoveCameraTo(cameraPositions["Position 2"]);
         }
+        */
 
+        // Every frame the camera turns to look at the player
         LookAtPlayer();
     }
     
@@ -133,5 +139,12 @@ public class CameraScript : MonoBehaviour
     {
         // Turns the camera to _target
         transform.LookAt(player.transform.position);
+    }
+
+    private int GetPlayerZone()
+    {
+        // this needs to just select a zone for the camera to think the player is in.
+
+        return 0;
     }
 }

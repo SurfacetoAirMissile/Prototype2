@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
-    public Camera mainCamera;
-
     public GameObject player;
     
     public Dictionary<string, Vector3> cameraPositions;
@@ -17,19 +15,19 @@ public class CameraScript : MonoBehaviour
 
     public enum CameraStates
     {
-        CAMERA_MOVING,
-        CAMERA_TRACKING
+        CAMERA_STATIONARY,
+        CAMERA_MOVING
     }
 
-    public CameraStates mainCameraState = CameraStates.CAMERA_TRACKING;
+    public CameraStates currentState = CameraStates.CAMERA_STATIONARY;
 
     public Vector3 cameraMoveTarget;
 
     void Awake()
     {
-        Vector3 startPosition = new Vector3(0.0F, 3.0F, -10.0F);
-        Vector3 position1 = new Vector3(-3.0F, 3.0F, -10.0F);
-        Vector3 position2 = new Vector3(3.0F, 3.0F, -10.0F);
+        Vector3 startPosition = transform.position;
+        Vector3 position1 = new Vector3(-5.0F, 4.0F, -10.0F);
+        Vector3 position2 = new Vector3(5.0F, 7.0F, -10.0F);
         cameraPositions = new Dictionary<string, Vector3>
         {
             { "Starting Position", startPosition },
@@ -41,7 +39,7 @@ public class CameraScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        TeleportCameraTo(cameraPositions["Starting Position"]);
+        //TeleportCameraTo(cameraPositions["Starting Position"]);
     }
 
     // Update is called once per frame
@@ -49,16 +47,16 @@ public class CameraScript : MonoBehaviour
     {
         cameraStopwatch += Time.deltaTime;
 
-        switch (mainCameraState)
+        switch (currentState)
         {
-            case CameraStates.CAMERA_TRACKING:
+            case CameraStates.CAMERA_STATIONARY:
                 
                 break;
             case CameraStates.CAMERA_MOVING:
                 PushCameraTowards(cameraMoveTarget);
-                if (mainCamera.transform.position == cameraMoveTarget)
+                if (this.transform.position == cameraMoveTarget)
                 {
-                    mainCameraState = CameraStates.CAMERA_TRACKING;
+                    currentState = CameraStates.CAMERA_STATIONARY;
                 }
                 break;
             default:
@@ -67,17 +65,11 @@ public class CameraScript : MonoBehaviour
 
         if (player.transform.position.x < -5.0F)
         {
-            if (mainCameraState == CameraStates.CAMERA_TRACKING)
-            {
-                MoveCameraTo(cameraPositions["Position 1"]);
-            }
+            MoveCameraTo(cameraPositions["Position 1"]);
         }
         else if (player.transform.position.x > 5.0F)
         {
-            if (mainCameraState == CameraStates.CAMERA_TRACKING)
-            {
-                MoveCameraTo(cameraPositions["Position 2"]);
-            }
+            MoveCameraTo(cameraPositions["Position 2"]);
         }
 
         LookAtPlayer();
@@ -87,10 +79,10 @@ public class CameraScript : MonoBehaviour
     private void PushCameraTowards(Vector3 _target)
     {
         // Makes sure that we're not already at the target.
-        if (mainCamera.transform.position != _target)
+        if (transform.position != _target)
         {
             // Calculates the difference vector between the camera and _target.
-            Vector3 difference = _target - mainCamera.transform.position;
+            Vector3 difference = _target - transform.position;
 
             // Calculates the distance between the camera and _target.
             float distance = difference.magnitude;
@@ -102,7 +94,7 @@ public class CameraScript : MonoBehaviour
                 TeleportCameraTo(_target);
 
                 // Holds the camera still.
-                mainCamera.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                GetComponent<Rigidbody>().velocity = Vector3.zero;
             }
             else
             {
@@ -114,32 +106,32 @@ public class CameraScript : MonoBehaviour
 
                 // Applies the force to the camera.
                 //mainCamera.GetComponent<Rigidbody>().AddForce(force);
-                mainCamera.gameObject.GetComponent<Rigidbody>().AddForce(force);
+                GetComponent<Rigidbody>().AddForce(force);
             }
         }
     }
 
     private void TeleportCameraTo(Vector3 _target)
     {
-        mainCamera.gameObject.transform.position = _target;
+        transform.position = _target;
     }
 
     private void MoveCameraTo(Vector3 _target)
     {
         // need to define where we're going
         cameraMoveTarget = _target;
-        mainCameraState = CameraStates.CAMERA_MOVING;
+        currentState = CameraStates.CAMERA_MOVING;
     }
 
     private void LookAt(Vector3 _target)
     {
         // Turns the camera to _target
-        mainCamera.transform.LookAt(_target);
+        transform.LookAt(_target);
     }
 
     private void LookAtPlayer()
     {
         // Turns the camera to _target
-        mainCamera.transform.LookAt(player.transform.position);
+        transform.LookAt(player.transform.position);
     }
 }

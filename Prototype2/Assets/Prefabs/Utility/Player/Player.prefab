@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 723350593463068514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.632141, y: 0.49, z: 4.6468363}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -87,7 +87,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 723350593463068514}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 66dc2479e609f874a8e9fa1a759706be, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -124,8 +124,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   xSpeed: 0
   zSpeed: 0
-  jumpForce: 300
-  speed: 100
+  jumpForce: 50
   drag: 2
   cheesePrefab: {fileID: 8597377780870242967, guid: 4e00bf2167416034d963264afc5c754a,
     type: 3}

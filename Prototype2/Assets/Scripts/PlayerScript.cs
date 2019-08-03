@@ -11,7 +11,6 @@ public class PlayerScript : MonoBehaviour
     public float xSpeed = 0.0f;
     public float zSpeed = 0.0f;
     public float jumpForce = 300.0f;
-    public float speed = 10.0f;
     public float drag = 2.0f;
     public GameObject cheesePrefab;
     public int equippedFood = 0;
@@ -19,6 +18,9 @@ public class PlayerScript : MonoBehaviour
     // Private Variables
     private float misnomer = 0.0f;
     private int winCondition = 1;
+    private float speed = 0.0f; // Current speed
+    private const float wSpeed = 50.0f; // Walk speed
+    private const float sSpeed = 100.0f; // Sprint speed
 
     private void FixedUpdate()
     {
@@ -35,6 +37,18 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             Jump();
+        }
+
+        // Sprint
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            // Sprinting
+            speed = sSpeed;
+        }
+        else
+        {
+            // Walking
+            speed = wSpeed;
         }
 
         // Horiztonal movement

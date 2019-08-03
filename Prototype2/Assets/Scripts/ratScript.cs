@@ -45,14 +45,17 @@ public class ratScript : MonoBehaviour
         switch (currentState)
         {
             case ratStates.statePatrol:
-                if (!MoveTowardsPosXZ(GetTargetNodePosition())) // if we're already at that point
+                if (pathContainer != null)
                 {
-                    // target the next node
-                    targetNode++;
-                    if (targetNode >= path.Count) // if the next node does not exist
+                    if (!MoveTowardsPosXZ(GetTargetNodePosition())) // if we're already at that point
                     {
-                        // target the first node
-                        targetNode = 0;
+                        // target the next node
+                        targetNode++;
+                        if (targetNode >= path.Count) // if the next node does not exist
+                        {
+                            // target the first node
+                            targetNode = 0;
+                        }
                     }
                 }
                 break;
@@ -109,10 +112,34 @@ public class ratScript : MonoBehaviour
                 {
                     // starts with anti-clockwise rotation
                     float rotationDirection = -1.0F;
-                    if (directionNormalized.x >= ratDirectionXZnormalized.x)
+                    bool flip = false;
+                    // intended direction.z is negative
+                    if (Mathf.Sign(directionNormalized.y) != 1.0F)
                     {
-                        // sets the rotation to be clockwise
-                        rotationDirection = 1.0F;
+                        directionNormalized *= -1.0F;
+                        flip = !flip;
+                    }
+                    // our direction.z is negative
+                    if (Mathf.Sign(ratDirectionXZnormalized.y) != 1.0F)
+                    {
+                        ratDirectionXZnormalized *= -1.0F;
+                        flip = !flip;
+                    }
+                    if (flip)
+                    {
+                        if (directionNormalized.x < ratDirectionXZnormalized.x)
+                        {
+                            // sets the rotation to be clockwise
+                            rotationDirection = 1.0F;
+                        }
+                    }
+                    else
+                    {
+                        if (directionNormalized.x > ratDirectionXZnormalized.x)
+                        {
+                            // sets the rotation to be clockwise
+                            rotationDirection = 1.0F;
+                        }
                     }
 
                     // we need to rotate the rat towards the direciton
@@ -129,11 +156,7 @@ public class ratScript : MonoBehaviour
                 }
                 else // we are very close <3
                 {
-                    Vector3 temp = transform.position;
-                    temp.x = point.x;
-                    temp.z = point.z;
-                    transform.position = temp;
-                    body.velocity = Vector3.zero;
+                    returnValue = false;
                 }
             }
             

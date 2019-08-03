@@ -97,6 +97,12 @@ public class PlayerScript : MonoBehaviour
             equippedFood += 1;
         }
 
+        if (other.tag == "CameraZone")
+        {
+            GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
+            camera.GetComponent<CameraScript>().UpdatePlayerPosition(other.gameObject.GetComponent<BoxCollider>(), true);
+        }
+
         // When player reaches home
         if (other.tag == "Home")
         {
@@ -105,7 +111,16 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void CheckWin()
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "CameraZone")
+        {
+            GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
+            camera.GetComponent<CameraScript>().UpdatePlayerPosition(other.gameObject.GetComponent<BoxCollider>(), false);
+        }
+    }
+
+        private void CheckWin()
     {
         // If had more than a certain amount of food
         if (equippedFood >= winCondition)

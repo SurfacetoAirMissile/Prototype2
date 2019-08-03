@@ -8,7 +8,11 @@ public class CameraScript : MonoBehaviour
     public GameObject player;
     public GameObject zoneManagerObject;
     
-    public Dictionary<string, Vector3> cameraPositions;
+    public Dictionary<int, Vector3> cameraPositions;
+    public Dictionary<int, BoxCollider> zones;
+    public Dictionary<int, bool> playerIsInZone;
+
+    public int currentZone = -1;
 
     public float cameraStopwatch;
 
@@ -23,24 +27,29 @@ public class CameraScript : MonoBehaviour
     public CameraStates currentState = CameraStates.CAMERA_STATIONARY;
 
     public Vector3 cameraMoveTarget;
+    public int zoneTarget;
 
     void Awake()
     {
-        Vector3 startPosition = transform.position;
-        Vector3 position1 = new Vector3(-5.0F, 4.0F, -10.0F);
-        Vector3 position2 = new Vector3(5.0F, 7.0F, -10.0F);
-        cameraPositions = new Dictionary<string, Vector3>
+        //zones = new Dictionary<int, BoxCollider>();
+        playerIsInZone = new Dictionary<int, bool>();
+        for (int i = 0; i < zones.Count; i++)
         {
-            { "Starting Position", startPosition },
-            { "Position 1", position1 },
-            { "Position 2", position2 }
+            playerIsInZone.Add(i, false);
+        }
+        cameraPositions = new Dictionary<int, Vector3>
+        {
+            { 0, new Vector3(-6.5F, 1.0F, -9.0F) },
+            { 1, new Vector3( 0.0F, 2.0F, -9.0F) },
+            { 2, new Vector3(-4.9F, 1.0F, -6.0F) },
+            { 3, new Vector3(-5.8F, 1.2F, -4.0F) },
         };
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        //TeleportCameraTo(cameraPositions["Starting Position"]);
+        TeleportCameraTo(cameraPositions[0]);
     }
 
     // Update is called once per frame
@@ -48,42 +57,36 @@ public class CameraScript : MonoBehaviour
     {
         cameraStopwatch += Time.deltaTime;
 
+
+
         switch (currentState)
         {
             case CameraStates.CAMERA_STATIONARY:
-                
+                int playerZone = GetPlayerZone();
+                if (currentZone != playerZone)
+                {
+                    MoveCameraToZone(playerZone);
+                }
                 break;
             case CameraStates.CAMERA_MOVING:
-                PushCameraTowards(cameraMoveTarget);
-                if (this.transform.position == cameraMoveTarget)
+                if (PushCameraTowards(GetCurrentCameraPosition()))
                 {
                     currentState = CameraStates.CAMERA_STATIONARY;
+                    currentZone = zoneTarget;
                 }
                 break;
             default:
                 break;
         }
 
-
-
-        /*
-        if (player.transform.position.x < -5.0F)
-        {
-            MoveCameraTo(cameraPositions["Position 1"]);
-        }
-        else if (player.transform.position.x > 5.0F)
-        {
-            MoveCameraTo(cameraPositions["Position 2"]);
-        }
-        */
-
         // Every frame the camera turns to look at the player
         LookAtPlayer();
     }
     
     // Applies a force to the camera in the direction of the position _target
-    private void PushCameraTowards(Vector3 _target)
+    private bool PushCameraTowards(Vector3 _target)
     {
+        bool returnValue = false;
         // Makes sure that we're not already at the target.
         if (transform.position != _target)
         {
@@ -97,10 +100,11 @@ public class CameraScript : MonoBehaviour
             if (distance < 0.05F)
             {
                 // Sets the camera's position to the target.
-                TeleportCameraTo(_target);
+                //TeleportCameraTo(_target);
 
                 // Holds the camera still.
-                GetComponent<Rigidbody>().velocity = Vector3.zero;
+                //GetComponent<Rigidbody>().velocity = Vector3.zero;
+                returnValue = true;
             }
             else
             {
@@ -115,6 +119,7 @@ public class CameraScript : MonoBehaviour
                 GetComponent<Rigidbody>().AddForce(force);
             }
         }
+        return returnValue;
     }
 
     private void TeleportCameraTo(Vector3 _target)
@@ -126,6 +131,13 @@ public class CameraScript : MonoBehaviour
     {
         // need to define where we're going
         cameraMoveTarget = _target;
+        currentState = CameraStates.CAMERA_MOVING;
+    }
+    private void MoveCameraToZone(int _zone)
+    {
+
+        cameraMoveTarget = cameraPositions[_zone];
+        zoneTarget = _zone;
         currentState = CameraStates.CAMERA_MOVING;
     }
 
@@ -141,10 +153,31 @@ public class CameraScript : MonoBehaviour
         transform.LookAt(player.transform.position);
     }
 
+    public void UpdatePlayerPosition(BoxCollider zone, bool isInZone)
+    {
+        for (int i = 0; i < zones.Count; i++)
+        {
+            if (zones[i] == zone)
+            {
+                playerIsInZone[i] = isInZone;
+            }
+        }
+    }
+
     private int GetPlayerZone()
     {
-        // this needs to just select a zone for the camera to think the player is in.
-
+        for (int i = 0; i < zones.Count; i++)
+        {
+            if (playerIsInZone[i])
+            {
+                return i;
+            }
+        }
         return 0;
+    }
+
+    private Vector3 GetCurrentCameraPosition()
+    {
+        return cameraPositions[GetPlayerZone()];
     }
 }

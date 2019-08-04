@@ -14,11 +14,16 @@ public class CatScript : MonoBehaviour
     private const float speed = 25.0f;
     private Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
     private const float angle = 5.0f;
+
+    // Timer
+    private float timerMax = 5.0f; // In seconds
+    private float waitTimer = 0.0f;
     
     private enum State
     {
         TURNING, // Is stationary and turning
         WALKING, // Is walking in a straight line to next point
+        WAITING, // Is sitting still watching for a mouse/rat
         HUNTING // Is chasing player (For Sam?)
     }
     private State catState = State.WALKING;
@@ -28,6 +33,9 @@ public class CatScript : MonoBehaviour
     {
         // Set default follow point
         followPoint = pointA;
+
+        // Set waiting timer
+        waitTimer = timerMax;
     }
 
     // Update function
@@ -56,7 +64,7 @@ public class CatScript : MonoBehaviour
                         velocity = followPoint.transform.position - this.transform.position;
 
                         // Enter turning state
-                        catState = State.TURNING;
+                        catState = State.WAITING;
                     }
 
                     break;
@@ -72,6 +80,24 @@ public class CatScript : MonoBehaviour
                     {
                         // Change state
                         catState = State.WALKING;
+                    }
+
+                    break;
+                }
+
+            case State.WAITING:
+                {
+                    // Tick timer
+                    waitTimer -= Time.fixedDeltaTime;
+
+                    // Check timer
+                    if (waitTimer <= 0.0f)
+                    {
+                        // Reset timer
+                        waitTimer = timerMax;
+
+                        // Change state
+                        catState = State.TURNING;
                     }
 
                     break;

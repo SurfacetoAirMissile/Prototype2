@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 4029525641045691736}
   - component: {fileID: 4029525641045691750}
   m_Layer: 0
-  m_Name: Rat (1)
-  m_TagString: Untagged
+  m_Name: Rat
+  m_TagString: Rat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

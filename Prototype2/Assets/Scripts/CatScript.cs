@@ -9,11 +9,11 @@ public class CatScript : MonoBehaviour
     public GameObject pointB;
 
     // Private variables
-    private const float turnSpeed = 5.0f; // Speed the cat turns
+    private const float turnSpeed = 2.0f; // Speed the cat turns
     private GameObject followPoint;
     private const float speed = 25.0f;
     private Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
-    private const float angle = 10.0f;
+    private const float angle = 5.0f;
     
     private enum State
     {

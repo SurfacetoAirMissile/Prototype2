@@ -9,6 +9,7 @@ TagManager:
   - Home
   - Trap
   - Rat
+  - Bread
   layers:
   - Default
   - TransparentFX

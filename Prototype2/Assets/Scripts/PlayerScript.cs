@@ -105,6 +105,15 @@ public class PlayerScript : MonoBehaviour
             // Destroy collectable
             Destroy(other.gameObject);
 
+            foodMeter += 2;
+        }
+
+        // Collided with bread
+        if (other.tag == "Bread")
+        {
+            // Destroy the bread
+            Destroy(other.gameObject);
+
             foodMeter += 1;
         }
 

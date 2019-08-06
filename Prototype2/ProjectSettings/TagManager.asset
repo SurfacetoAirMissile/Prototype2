@@ -7,6 +7,9 @@ TagManager:
   - Cheese
   - Floor
   - Home
+  - Trap
+  - Rat
+  - Bread
   layers:
   - Default
   - TransparentFX

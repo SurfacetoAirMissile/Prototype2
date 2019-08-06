@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2921868318661057737
+--- !u!1 &8468888366681095169
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2921868318661057741}
-  - component: {fileID: 2921868318661057740}
-  - component: {fileID: 2921868318661057739}
-  - component: {fileID: 7193274396220670732}
+  - component: {fileID: 4890012825413488146}
+  - component: {fileID: 4505805791196820516}
+  - component: {fileID: 7907018117931649245}
+  - component: {fileID: 479180426426557708}
+  - component: {fileID: 479180426426557707}
+  - component: {fileID: 479180426426557706}
   m_Layer: 0
-  m_Name: CheeseCollectable
-  m_TagString: Cheese
+  m_Name: Cat
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2921868318661057741
+--- !u!4 &4890012825413488146
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2921868318661057737}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 8468888366681095169}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &2921868318661057740
+--- !u!33 &4505805791196820516
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2921868318661057737}
-  m_Mesh: {fileID: -2544318000483907571, guid: 71503e226b58ce04bb8bc37ad39145d0, type: 3}
---- !u!23 &2921868318661057739
+  m_GameObject: {fileID: 8468888366681095169}
+  m_Mesh: {fileID: 8321685774571456786, guid: 9078d892d8f90604b8e858ce1ca7ee9a, type: 3}
+--- !u!23 &7907018117931649245
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2921868318661057737}
+  m_GameObject: {fileID: 8468888366681095169}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -58,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9d3a46f3afa360a4ea25af0a23a85e0e, type: 2}
+  - {fileID: 5561349426305759274, guid: 9078d892d8f90604b8e858ce1ca7ee9a, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -78,16 +80,46 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &7193274396220670732
+--- !u!54 &479180426426557708
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8468888366681095169}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 10
+  m_AngularDrag: 0
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 0
+--- !u!65 &479180426426557707
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2921868318661057737}
+  m_GameObject: {fileID: 8468888366681095169}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.05923339, y: 0.05834251, z: 0.058589023}
-  m_Center: {x: 0.0004454404, y: 0, z: -0.00012325495}
+  m_Size: {x: 0.38091934, y: 0.5859529, z: 0.57911587}
+  m_Center: {x: 0, y: 0.29297566, z: 0.0165658}
+--- !u!114 &479180426426557706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8468888366681095169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ec5c669a7d346408aeba6931aa8aa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointA: {fileID: 0}
+  pointB: {fileID: 0}

@@ -12,7 +12,7 @@ public class CameraScript : MonoBehaviour
     public Dictionary<int, BoxCollider> zones;
     public Dictionary<int, bool> playerIsInZone;
 
-    public int currentZone = -1;
+    public int currentZone = 0;
 
     public float cameraStopwatch;
 
@@ -31,7 +31,7 @@ public class CameraScript : MonoBehaviour
 
     void Awake()
     {
-        //zones = new Dictionary<int, BoxCollider>();
+        zones = new Dictionary<int, BoxCollider>();
         playerIsInZone = new Dictionary<int, bool>();
         for (int i = 0; i < zones.Count; i++)
         {
@@ -43,6 +43,8 @@ public class CameraScript : MonoBehaviour
             { 1, new Vector3( 0.0F, 2.0F, -9.0F) },
             { 2, new Vector3(-4.9F, 1.0F, -6.0F) },
             { 3, new Vector3(-5.8F, 1.2F, -4.0F) },
+            { 4, new Vector3(-4.7F, 1.2F, -2.5F) },
+            { 5, new Vector3(-4.7F, 1.0F, -1.5F) }
         };
     }
 

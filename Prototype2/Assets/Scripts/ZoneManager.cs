@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class ZoneManager : MonoBehaviour
 {
-    public Dictionary<int, BoxCollider> zones; 
-
     private void Awake()
     {
-        zones = new Dictionary<int, BoxCollider>();
+        //Dictionary<int, BoxCollider> zones = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>().zones;
         for (int i = 0; i < this.transform.childCount; i++)
         {
             BoxCollider zoneI = this.transform.GetChild(i).gameObject.GetComponent<BoxCollider>();
-            zones.Add(i, zoneI);
+            //zones.Add(i, zoneI);
+            GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>().zones.Add(i, zoneI);
         }
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>().zones = zones;
+        //GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>().zones = zones;
     }
 
 

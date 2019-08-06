@@ -12,7 +12,6 @@ public class PlayerScript : MonoBehaviour
     public float zSpeed = 0.0f;
     public float jumpForce = 300.0f;
     public float drag = 2.0f;
-    public GameObject cheesePrefab;
     public int foodMeter = 0;
 
     // Private Variables

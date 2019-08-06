@@ -4,19 +4,17 @@ using UnityEngine;
 
 public class ZoneManager : MonoBehaviour
 {
-    public GameObject Area1Object;
-    public BoxCollider Area1;
-    public GameObject Area2Object;
-    public BoxCollider Area2;
-    public GameObject Area3Object;
-    public BoxCollider Area3;
+    public Dictionary<int, BoxCollider> zones; 
 
     private void Awake()
     {
-        // Sets up the areas for the camera to access
-        Area1 = Area1Object.GetComponent<BoxCollider>();
-        Area2 = Area2Object.GetComponent<BoxCollider>();
-        Area3 = Area3Object.GetComponent<BoxCollider>();
+        zones = new Dictionary<int, BoxCollider>();
+        for (int i = 0; i < this.transform.childCount; i++)
+        {
+            BoxCollider zoneI = this.transform.GetChild(i).gameObject.GetComponent<BoxCollider>();
+            zones.Add(i, zoneI);
+        }
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>().zones = zones;
     }
 
 

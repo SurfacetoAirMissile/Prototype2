@@ -10,6 +10,7 @@ TagManager:
   - Trap
   - Rat
   - Bread
+  - CameraZone
   layers:
   - Default
   - TransparentFX

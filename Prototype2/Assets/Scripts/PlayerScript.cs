@@ -10,7 +10,6 @@ public class PlayerScript : MonoBehaviour
     public Vector3 velocity = new Vector3(0, 0, 0);
     public float xSpeed = 0.0f;
     public float zSpeed = 0.0f;
-    public float jumpForce = 300.0f;
     public float drag = 2.0f;
     public int foodMeter = 0;
 
@@ -19,8 +18,11 @@ public class PlayerScript : MonoBehaviour
     private int winCondition = 1;
     // Movement speeds
     private float speed = 0.0f; // Current speed
-    private const float wSpeed = 50.0f; // Walk speed
-    private const float sSpeed = 100.0f; // Sprint speed
+    private const float wSpeed = 25.0f; // Walk speed
+    private const float sSpeed = 50.0f; // Sprint speed
+    // Jump Heights
+    private float jumpForce = 150.0f;
+    private float highJumpForce = 200.0f;
     // Rotation speeds
     private float rSpeed = 5.0f;
 
@@ -36,7 +38,7 @@ public class PlayerScript : MonoBehaviour
         misnomer = this.GetComponent<CapsuleCollider>().bounds.extents.y;
 
         // Jump
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
         }
@@ -63,8 +65,16 @@ public class PlayerScript : MonoBehaviour
         // If touching the ground
         if (Physics.Raycast(this.transform.position, -Vector3.up, misnomer + 0.1f))
         {
-            // Jump
-            this.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce);
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                // High Jump
+                this.GetComponent<Rigidbody>().AddForce(Vector3.up * highJumpForce);
+            }
+            else
+            {
+                // Normal Jump
+                this.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce);
+            }
         }
     }
 

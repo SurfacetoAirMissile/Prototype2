@@ -11,7 +11,8 @@ public class ratScript : MonoBehaviour
 
     public enum ratStates
     {
-        statePatrol
+        patrol,
+        dead
     }
 
     public ratStates currentState;
@@ -44,7 +45,7 @@ public class ratScript : MonoBehaviour
         // state machine
         switch (currentState)
         {
-            case ratStates.statePatrol:
+            case ratStates.patrol:
                 if (pathContainer != null)
                 {
                     if (!MoveTowardsPosXZ(GetTargetNodePosition())) // if we're already at that point
@@ -172,5 +173,12 @@ public class ratScript : MonoBehaviour
     private Vector3 GetTargetNodePosition()
     {
         return path[targetNode].position;
+    }
+
+    // Rat is killed
+    public void Killed()
+    {
+        // Change state
+        currentState = ratStates.dead;
     }
 }

@@ -13,7 +13,7 @@ public class MouseTrapScript : MonoBehaviour
         if (collision.collider.tag == "Rat")
         {
             // Collide with rat
-            // Rat dead
+            collision.collider.GetComponent<ratScript>().Killed();
 
             TriggerTrap();
         }

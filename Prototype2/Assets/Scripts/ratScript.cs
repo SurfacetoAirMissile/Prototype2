@@ -28,7 +28,12 @@ public class ratScript : MonoBehaviour
         if (pathContainer != null)
         {
             // fetch the path
-            path = pathContainer.GetComponent<PathManagerScipt>().nodes;
+            path = new List<Transform>();
+            for (int i = 0; i < pathContainer.transform.childCount; i++)
+            {
+                Transform nodeI = pathContainer.transform.GetChild(i);
+                path.Add(nodeI);
+            }
         }
     }
 

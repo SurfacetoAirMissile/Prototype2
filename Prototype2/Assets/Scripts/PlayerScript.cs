@@ -11,14 +11,14 @@ public class PlayerScript : MonoBehaviour
     public float xSpeed = 0.0f;
     public float zSpeed = 0.0f;
     public float drag = 2.0f;
-    public int foodMeter = 0;
+    public uint foodMeter = 0;
 
     // Sounds
     public AudioSource munchSfx;
 
     // Private Variables
     private float misnomer = 0.0f;
-    private int winCondition = 1;
+    private int winCondition = 18;
     // Movement speeds
     private float speed = 0.0f; // Current speed
     private const float wSpeed = 18.5f; // Walk speed
@@ -106,9 +106,11 @@ public class PlayerScript : MonoBehaviour
             // Destroy collectable
             Destroy(other.gameObject);
 
-            foodMeter += 2;
+            foodMeter += 4;
 
             munchSfx.Play();
+
+            GameObject.Find("Image").GetComponent<UIscript>().UpdateSprites(foodMeter);
         }
 
         // Collided with bread
@@ -120,6 +122,8 @@ public class PlayerScript : MonoBehaviour
             foodMeter += 1;
 
             munchSfx.Play();
+
+            GameObject.Find("Image").GetComponent<UIscript>().UpdateSprites(foodMeter);
         }
 
         if (other.tag == "CameraZone")
@@ -136,6 +140,16 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    // When collided with collider
+    private void OnCollisionEnter(Collision collision)
+    {
+        // If colliding with cat
+        if (collision.collider.tag == "cat")
+        {
+            GameObject.Find("Player").GetComponent<PlayerScript>().Dead();
+        }
+    }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "CameraZone")
@@ -145,7 +159,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-        private void CheckWin()
+    private void CheckWin()
     {
         // If had more than a certain amount of food
         if (foodMeter >= winCondition)

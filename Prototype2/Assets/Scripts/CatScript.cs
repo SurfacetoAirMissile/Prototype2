@@ -113,8 +113,23 @@ public class CatScript : MonoBehaviour
             case State.HUNTING:
                 {
                     // Cat has seen the mouse
-                    GameObject.Find("Player").GetComponent<PlayerScript>().Dead();
-                    catState = State.WALKING;
+                    //GameObject.Find("Player").GetComponent<PlayerScript>().Dead();
+                    //catState = State.WALKING;
+
+                    GameObject oPlayer = GameObject.Find("Player");
+
+                    // Look at player
+                    transform.LookAt(oPlayer.transform);
+
+                    // Chase player
+                    velocity = oPlayer.transform.position - this.transform.position;
+                    this.GetComponent<Rigidbody>().AddForce(velocity.normalized * speed);
+                    
+                    // Check if lost player
+                    if (!CanSeePlayer())
+                    {
+                        catState = State.WALKING;
+                    }
 
                     break;
                 }

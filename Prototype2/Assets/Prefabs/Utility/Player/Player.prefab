@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 723350593463068519}
   - component: {fileID: 723350593463068504}
   - component: {fileID: 2368997325856973896}
+  - component: {fileID: 762484896}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 723350593463068514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.632141, y: 0.49, z: 4.6468363}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -42,7 +43,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 723350593463068514}
-  m_Mesh: {fileID: -6915272511953747994, guid: d249c353f262d21408a0ba89774cfecb, type: 3}
+  m_Mesh: {fileID: -6915272511953747994, guid: 4bdcb05d9ddcfe240aff83d003ef1168, type: 3}
 --- !u!23 &723350593463068516
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -111,10 +112,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   xSpeed: 0
   zSpeed: 0
-  jumpForce: 50
   drag: 2
-  cheesePrefab: {fileID: 8597377780870242967, guid: 4e00bf2167416034d963264afc5c754a,
-    type: 3}
   foodMeter: 0
 --- !u!136 &2368997325856973896
 CapsuleCollider:
@@ -126,7 +124,23 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 66dc2479e609f874a8e9fa1a759706be, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.04904896
-  m_Height: 0.3354807
+  m_Radius: 0.16042525
+  m_Height: 0.6198565
   m_Direction: 2
-  m_Center: {x: 0, y: 0.036800086, z: -0.060899734}
+  m_Center: {x: 0, y: 0.1481764, z: -0.009123484}
+--- !u!111 &762484896
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723350593463068514}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 1827226128182048838, guid: 4bdcb05d9ddcfe240aff83d003ef1168,
+    type: 3}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0

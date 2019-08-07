@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 479180426426557708}
   - component: {fileID: 479180426426557707}
   - component: {fileID: 479180426426557706}
-  - component: {fileID: 1123573877}
+  - component: {fileID: 7445916070723254247}
   m_Layer: 0
   m_Name: Cat
   m_TagString: Untagged
@@ -216,7 +216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointA: {fileID: 0}
   pointB: {fileID: 0}
---- !u!111 &1123573877
+--- !u!111 &7445916070723254247
 Animation:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -225,10 +225,9 @@ Animation:
   m_GameObject: {fileID: 8468888366681095169}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 1827226128182048838, guid: 14c332a4612ac224eaad0af495441235,
+  m_Animation: {fileID: 1827226128182048838, guid: b38ad3997b5486a4eb6c1772ecea5b7f,
     type: 3}
-  m_Animations:
-  - {fileID: 1827226128182048838, guid: 14c332a4612ac224eaad0af495441235, type: 3}
+  m_Animations: []
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0

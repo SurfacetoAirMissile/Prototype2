@@ -107,6 +107,8 @@ public class CatScript : MonoBehaviour
                         catState = State.TURNING;
                     }
 
+                    //GetComponent<Animation>()
+
                     break;
                 }
 

@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
+    public GameObject animatorChild;
+    public Animator animator;
+
     // Public Variables
     public Vector3 velocity = new Vector3(0, 0, 0);
     public float xSpeed = 0.0f;
@@ -28,6 +31,11 @@ public class PlayerScript : MonoBehaviour
     private float highJumpForce = 200.0f;
     // Rotation speeds
     private float rSpeed = 5.0f;
+
+    private void Awake()
+    {
+        animator = animatorChild.GetComponent<Animator>();
+    }
 
     private void FixedUpdate()
     {
@@ -58,12 +66,14 @@ public class PlayerScript : MonoBehaviour
             speed = wSpeed;
         }
 
+        /*
         // DEBUG
         if (Input.GetKey(KeyCode.K))
         {
             GameObject.Find("SoundManager").GetComponent<AudioHandler>().PlayCatDeath();
             SceneManager.LoadScene("lose");
         }
+        */
 
         // Horiztonal movement
         MovementV2();
@@ -145,7 +155,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-        private void CheckWin()
+    private void CheckWin()
     {
         // If had more than a certain amount of food
         if (foodMeter >= winCondition)

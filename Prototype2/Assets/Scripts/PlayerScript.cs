@@ -21,8 +21,8 @@ public class PlayerScript : MonoBehaviour
     private int winCondition = 1;
     // Movement speeds
     private float speed = 0.0f; // Current speed
-    private const float wSpeed = 25.0f; // Walk speed
-    private const float sSpeed = 50.0f; // Sprint speed
+    private const float wSpeed = 18.5f; // Walk speed
+    private const float sSpeed = 25.0f; // Sprint speed
     // Jump Heights
     private float jumpForce = 150.0f;
     private float highJumpForce = 200.0f;

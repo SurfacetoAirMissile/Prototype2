@@ -8,6 +8,23 @@ public class PlayerScript : MonoBehaviour
 {
     public GameObject animatorChild;
     public Animator animator;
+    public PlayerAnimatorScript animationScript;
+
+    public enum playerStates
+    {
+        walk,
+        idle,
+        transInIdle,
+        transOutIdle,
+        run,
+        transInRun,
+        transOutRun,
+
+    }
+
+    public bool isAnimationTriggered = false;
+
+    public playerStates currentState;
 
     // Public Variables
     public Vector3 velocity = new Vector3(0, 0, 0);
@@ -35,9 +52,28 @@ public class PlayerScript : MonoBehaviour
     private void Awake()
     {
         animator = animatorChild.GetComponent<Animator>();
+        animationScript = animatorChild.GetComponent<PlayerAnimatorScript>();
     }
 
     private void FixedUpdate()
+    {
+        switch (currentState)
+        {
+            case playerStates.transInIdle:
+                if (!isAnimationTriggered)
+                {
+                    animator.SetTrigger("TriggerStartIdle");
+                    isAnimationTriggered = true;
+                }
+                break;
+            default:
+                break;
+        }
+
+        StandardUpdate();
+    }
+
+    private void StandardUpdate()
     {
         // Manual Drag (X and Z axis)
         Vector3 vel = this.GetComponent<Rigidbody>().velocity;
@@ -66,18 +102,10 @@ public class PlayerScript : MonoBehaviour
             speed = wSpeed;
         }
 
-        /*
-        // DEBUG
-        if (Input.GetKey(KeyCode.K))
-        {
-            GameObject.Find("SoundManager").GetComponent<AudioHandler>().PlayCatDeath();
-            SceneManager.LoadScene("lose");
-        }
-        */
-
         // Horiztonal movement
         MovementV2();
     }
+
 
     private void Jump()
     {
@@ -171,5 +199,23 @@ public class PlayerScript : MonoBehaviour
     public void Dead()
     {
         SceneManager.LoadScene("lose");
+    }
+
+    public void TransOutIdle()
+    {
+        bool shiftKey = Input.GetKey(KeyCode.LeftShift);
+        float verticalAxis = Input.GetAxisRaw("Vertical");
+        float horizontalAxis = Input.GetAxisRaw("Horizontal");
+        if (shiftKey && (verticalAxis != 0 || horizontalAxis != 0))
+        {
+            // running
+            currentState = playerStates.transInRun;
+            return;
+        }
+        if (verticalAxis != 0 || horizontalAxis != 0)
+        {
+            // walking
+            currentState = playerStates.walk;
+        }
     }
 }

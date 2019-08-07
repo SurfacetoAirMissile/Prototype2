@@ -109,6 +109,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36e9164ac40abee41aa140165d4a6dbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animatorChild: {fileID: 0}
+  animator: {fileID: 0}
+  animationScript: {fileID: 0}
+  isAnimationTriggered: 0
+  currentState: 2
   velocity: {x: 0, y: 0, z: 0}
   xSpeed: 0
   zSpeed: 0

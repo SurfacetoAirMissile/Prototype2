@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02f4a0cf2b8d9054e90ca0909c966149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  torqueConstant: 200
-  forceConstant: 2000
+  torqueConstant: 150
+  forceConstant: 350
   currentState: 0
   pathContainer: {fileID: 0}

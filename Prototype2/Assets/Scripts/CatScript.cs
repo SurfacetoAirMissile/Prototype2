@@ -14,6 +14,7 @@ public class CatScript : MonoBehaviour
     private const float speed = 25.0f;
     private Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
     private const float angle = 5.0f;
+    private const float viewAngle = 90.0f;
 
     // Timer
     private float timerMax = 5.0f; // In seconds
@@ -41,6 +42,12 @@ public class CatScript : MonoBehaviour
     // Update function
     private void FixedUpdate()
     {
+        // If cat can see player
+        if (CanSeePlayer())
+        {
+            catState = State.HUNTING;
+        }
+
         switch (catState)
         {
             case State.WALKING:
@@ -103,9 +110,42 @@ public class CatScript : MonoBehaviour
                     break;
                 }
 
+            case State.HUNTING:
+                {
+                    // Cat has seen the mouse
+                    Destroy(GameObject.Find("Player"));
+                    catState = State.WALKING;
+
+                    break;
+                }
+
             default:
                 break;
         }
+    }
+
+    private bool CanSeePlayer()
+    {
+        GameObject oPlayer = GameObject.Find("Player");
+        RaycastHit hit;
+
+        // If the raycast hit something (Of course it will)
+        if (Physics.Raycast(this.transform.position, oPlayer.transform.position - this.transform.position, out hit))
+        {
+            // If it hit the player
+            if (hit.transform == oPlayer.transform)
+            {
+                // If the player is within the radius
+                float playerAngle = Vector3.Angle(oPlayer.transform.position - this.transform.position, this.transform.forward);
+                if (playerAngle < viewAngle * 0.5f)
+                {
+                    // Player's been caught
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // Swaps points to follow

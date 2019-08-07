@@ -7,26 +7,38 @@ public class MouseTrapScript : MonoBehaviour
     // Public variables
     public Mesh trapReadyModel;
     public Mesh trapSprungModel;
+    public static bool killedByTrap = false;
+
+    // Private variables
+    private bool isActive = true;
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.tag == "Rat")
+        if (isActive)
         {
-            // Collide with rat
-            collision.collider.GetComponent<ratScript>().Killed();
+            if (collision.collider.tag == "Rat")
+            {
+                // Collide with rat
+                collision.collider.GetComponent<ratScript>().Killed();
 
-            TriggerTrap();
-        }
-        if (collision.collider.tag == "Player")
-        {
-            // Collider with player
-            collision.collider.GetComponent<PlayerScript>().Dead();
-            TriggerTrap();
+                TriggerTrap();
+            }
+            if (collision.collider.tag == "Player")
+            {
+                // Collider with player
+                killedByTrap = true;
+                collision.collider.GetComponent<PlayerScript>().Dead();
+                TriggerTrap();
+            }
         }
     }
 
     private void TriggerTrap()
     {
         this.GetComponent<MeshFilter>().mesh = trapSprungModel;
+
+        isActive = false;
+
+        Destroy(this.gameObject);
     }
 }

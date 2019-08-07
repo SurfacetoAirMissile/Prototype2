@@ -9,6 +9,9 @@ public class MouseTrapScript : MonoBehaviour
     public Mesh trapSprungModel;
     public static bool killedByTrap = false;
 
+    // Audio
+    public AudioSource snapSfx;
+
     // Private variables
     private bool isActive = true;
 
@@ -19,6 +22,8 @@ public class MouseTrapScript : MonoBehaviour
             if (collision.collider.tag == "Rat")
             {
                 // Collide with rat
+                snapSfx.Play();
+
                 collision.collider.GetComponent<ratScript>().Killed();
 
                 TriggerTrap();

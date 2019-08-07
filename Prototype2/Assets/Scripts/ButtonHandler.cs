@@ -10,4 +10,9 @@ public class ButtonHandler : MonoBehaviour
     {
         SceneManager.LoadScene("Level Design 1");
     }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("menu");
+    }
 }

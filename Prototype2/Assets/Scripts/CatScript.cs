@@ -113,7 +113,7 @@ public class CatScript : MonoBehaviour
             case State.HUNTING:
                 {
                     // Cat has seen the mouse
-                   // GameObject.Find("Player").GetComponent<PlayerScript>().Dead();
+                    GameObject.Find("Player").GetComponent<PlayerScript>().Dead();
                     catState = State.WALKING;
 
                     break;
@@ -128,19 +128,25 @@ public class CatScript : MonoBehaviour
     {
         GameObject oPlayer = GameObject.Find("Player");
         RaycastHit hit;
+        Vector3 diff = oPlayer.transform.position - this.transform.position;
+        float distance = diff.magnitude;
 
-        // If the raycast hit something (Of course it will)
-        if (Physics.Raycast(this.transform.position, oPlayer.transform.position - this.transform.position, out hit))
+        // If player is within distance of the cat
+        if ((distance < 4.0f) && ((oPlayer.transform.position.y - this.transform.position.y) < 1))
         {
-            // If it hit the player
-            if (hit.transform == oPlayer.transform)
+            // If the raycast hit something (Of course it will)
+            if (Physics.Raycast(this.transform.position, diff, out hit))
             {
-                // If the player is within the radius
-                float playerAngle = Vector3.Angle(oPlayer.transform.position - this.transform.position, this.transform.forward);
-                if (playerAngle < viewAngle * 0.5f)
+                // If it hit the player
+                if (hit.transform == oPlayer.transform)
                 {
-                    // Player's been caught
-                    return true;
+                    // If the player is within the radius
+                    float playerAngle = Vector3.Angle(oPlayer.transform.position - this.transform.position, this.transform.forward);
+                    if (playerAngle < viewAngle * 0.5f)
+                    {
+                        // Player's been caught
+                        return true;
+                    }
                 }
             }
         }

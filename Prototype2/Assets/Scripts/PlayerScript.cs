@@ -13,6 +13,9 @@ public class PlayerScript : MonoBehaviour
     public float drag = 2.0f;
     public int foodMeter = 0;
 
+    // Sounds
+    public AudioSource munchSfx;
+
     // Private Variables
     private float misnomer = 0.0f;
     private int winCondition = 1;
@@ -55,8 +58,14 @@ public class PlayerScript : MonoBehaviour
             speed = wSpeed;
         }
 
+        // DEBUG
+        if (Input.GetKey(KeyCode.K))
+        {
+            GameObject.Find("SoundManager").GetComponent<AudioHandler>().PlayCatDeath();
+            SceneManager.LoadScene("lose");
+        }
+
         // Horiztonal movement
-        //Movement();
         MovementV2();
     }
 
@@ -75,23 +84,6 @@ public class PlayerScript : MonoBehaviour
                 // Normal Jump
                 this.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce);
             }
-        }
-    }
-
-    // Controls player movement
-    private void Movement()
-    {
-        xSpeed = Input.GetAxisRaw("Horizontal");
-        zSpeed = Input.GetAxisRaw("Vertical");
-
-        velocity = new Vector3(xSpeed, 0.0f, zSpeed);
-
-        this.GetComponent<Rigidbody>().AddForce(velocity.normalized * speed, ForceMode.Acceleration);
-
-        // If moving to some capacity
-        if (velocity != new Vector3(0.0f, 0.0f, 0.0f))
-        {
-            this.transform.rotation = Quaternion.LookRotation(velocity);
         }
     }
 
@@ -115,6 +107,8 @@ public class PlayerScript : MonoBehaviour
             Destroy(other.gameObject);
 
             foodMeter += 2;
+
+            munchSfx.Play();
         }
 
         // Collided with bread
@@ -124,6 +118,8 @@ public class PlayerScript : MonoBehaviour
             Destroy(other.gameObject);
 
             foodMeter += 1;
+
+            munchSfx.Play();
         }
 
         if (other.tag == "CameraZone")

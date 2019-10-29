@@ -6,12 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
-    public GameObject objectiveMarker;
+    // Serialised
+    [SerializeField] GameObject objectiveMarker;
+    [SerializeField] GameObject animatorChild;
+    [SerializeField] Animator animator;
+    [SerializeField] PlayerAnimatorScript animationScript;
 
-    public GameObject animatorChild;
-    public Animator animator;
-    public PlayerAnimatorScript animationScript;
-
+    // Public
     public static bool killedByRat = false;
 
     public enum playerStates
@@ -25,41 +26,53 @@ public class PlayerScript : MonoBehaviour
         transOutRun,
 
     }
-
-    //public bool isAnimationTriggered = false;
-
     public playerStates currentState;
 
     // Public Variables
     public Vector3 velocity = new Vector3(0, 0, 0);
-    public float xSpeed = 0.0f;
-    public float zSpeed = 0.0f;
-    public float drag = 2.0f;
-    public uint foodMeter = 0;
+    [SerializeField] float xSpeed = 0.0f;
+    [SerializeField] float zSpeed = 0.0f;
+    [SerializeField] float drag = 2.0f;
+    [SerializeField] uint foodMeter = 0;
 
     // Sounds
-    public AudioSource munchSfx;
+    [SerializeField] AudioSource munchSfx;
 
     // Private Variables
-    private float misnomer = 0.0f;
-    private int winCondition = 18;
+    /// <summary>
+    /// The bounds of the player's y
+    /// </summary>
+    float yBounds = 0.0f;
+    int winCondition = 18;
     // Movement speeds
-    private float speed = 0.0f; // Current speed
-    private const float wSpeed = 18.5f; // Walk speed
-    private const float sSpeed = 25.0f; // Sprint speed
-    // Jump Heights
-    private float jumpForce = 150.0f;
-    private float highJumpForce = 200.0f;
+    /// <summary>
+    /// Current Speed
+    /// </summary>
+    float speed = 0.0f;
+    /// <summary>
+    /// Walk Speed
+    /// </summary>
+    const float wSpeed = 18.5f;
+    /// <summary>
+    /// Sprint Speed
+    /// </summary>
+    const float sSpeed = 25.0f;
     // Rotation speeds
-    private float rSpeed = 5.0f;
+    /// <summary>
+    /// Rotation Speed
+    /// </summary>
+    float rSpeed = 5.0f;
+    // Jump Heights
+    float jumpForce = 150.0f;
+    float highJumpForce = 200.0f;
 
-    private void Awake()
+     void Awake()
     {
         animator = animatorChild.GetComponent<Animator>();
         animationScript = animatorChild.GetComponent<PlayerAnimatorScript>();
     }
 
-    private void FixedUpdate()
+     void FixedUpdate()
     {
         bool shiftKey = Input.GetKey(KeyCode.LeftShift);
         float verticalAxis = Input.GetAxisRaw("Vertical");
@@ -72,7 +85,6 @@ public class PlayerScript : MonoBehaviour
                 if (verticalAxis != 0.0F || horizontalAxis != 0.0F)
                 {
                     animator.SetTrigger("TriggerExitIdle");
-                    //isAnimationTriggered = true;
                 }
                 break;
             case playerStates.walk:
@@ -80,12 +92,10 @@ public class PlayerScript : MonoBehaviour
                 if (verticalAxis == 0.0F && horizontalAxis == 0.0F)
                 {
                     animator.SetTrigger("TriggerStartIdle");
-                    //isAnimationTriggered = true;
                 }
                 if (shiftKey)
                 {
                     animator.SetTrigger("TriggerStartRun");
-                    //isAnimationTriggered = true;
                 }
                 break;
             case playerStates.run:
@@ -93,7 +103,6 @@ public class PlayerScript : MonoBehaviour
                 if ((verticalAxis == 0.0F && horizontalAxis == 0.0F) || !shiftKey)
                 {
                     animator.SetTrigger("TriggerExitRun");
-                    //isAnimationTriggered = true;
                 }
                 break;
             default:
@@ -111,7 +120,44 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    private void StandardUpdate()
+    // Not called?
+    // void StandardUpdate()
+    //{
+    //    // Manual Drag (X and Z axis)
+    //    Vector3 vel = this.GetComponent<Rigidbody>().velocity;
+    //    vel.x *= (0.98f / drag);
+    //    vel.z *= (0.98f / drag);
+    //    this.GetComponent<Rigidbody>().velocity = vel;
+
+    //    // Update distance to ground
+    //    yBounds = this.GetComponent<CapsuleCollider>().bounds.extents.y;
+
+    //    // Jump
+    //    if (Input.GetKeyDown(KeyCode.Space))
+    //    {
+    //        Jump();
+    //    }
+
+    //    // Sprint
+    //    if (Input.GetKey(KeyCode.LeftShift))
+    //    {
+    //        // Sprinting
+    //        speed = sSpeed;
+    //    }
+    //    else
+    //    {
+    //        // Walking
+    //        speed = wSpeed;
+    //    }
+
+    //    // Horiztonal movement
+    //    MovementV2();
+    //}
+
+    /// <summary>
+    /// Moves the player
+    /// </summary>
+     void WalkUpdate()
     {
         // Manual Drag (X and Z axis)
         Vector3 vel = this.GetComponent<Rigidbody>().velocity;
@@ -120,40 +166,7 @@ public class PlayerScript : MonoBehaviour
         this.GetComponent<Rigidbody>().velocity = vel;
 
         // Update distance to ground
-        misnomer = this.GetComponent<CapsuleCollider>().bounds.extents.y;
-
-        // Jump
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
-
-        // Sprint
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            // Sprinting
-            speed = sSpeed;
-        }
-        else
-        {
-            // Walking
-            speed = wSpeed;
-        }
-
-        // Horiztonal movement
-        MovementV2();
-    }
-
-    private void WalkUpdate()
-    {
-        // Manual Drag (X and Z axis)
-        Vector3 vel = this.GetComponent<Rigidbody>().velocity;
-        vel.x *= (0.98f / drag);
-        vel.z *= (0.98f / drag);
-        this.GetComponent<Rigidbody>().velocity = vel;
-
-        // Update distance to ground
-        misnomer = this.GetComponent<CapsuleCollider>().bounds.extents.y;
+        yBounds = this.GetComponent<CapsuleCollider>().bounds.extents.y;
 
         // Jump
         if (Input.GetKeyDown(KeyCode.Space))
@@ -167,7 +180,10 @@ public class PlayerScript : MonoBehaviour
         MovementV2();
     }
 
-    private void RunUpdate()
+    /// <summary>
+    /// Moves the player when sprinting
+    /// </summary>
+     void RunUpdate()
     {
         // Manual Drag (X and Z axis)
         Vector3 vel = this.GetComponent<Rigidbody>().velocity;
@@ -176,7 +192,7 @@ public class PlayerScript : MonoBehaviour
         this.GetComponent<Rigidbody>().velocity = vel;
 
         // Update distance to ground
-        misnomer = this.GetComponent<CapsuleCollider>().bounds.extents.y;
+        yBounds = this.GetComponent<CapsuleCollider>().bounds.extents.y;
 
         // Jump
         if (Input.GetKeyDown(KeyCode.Space))
@@ -190,10 +206,13 @@ public class PlayerScript : MonoBehaviour
         MovementV2();
     }
 
-    private void Jump()
+    /// <summary>
+    /// Makes the player jump
+    /// </summary>
+     void Jump()
     {
         // If touching the ground
-        if (Physics.Raycast(this.transform.position, -Vector3.up, misnomer + 0.1f))
+        if (Physics.Raycast(this.transform.position, -Vector3.up, yBounds + 0.1f))
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
@@ -208,7 +227,10 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void MovementV2()
+    /// <summary>
+    /// Checks for input for movement
+    /// </summary>
+     void MovementV2()
     {
         xSpeed = Input.GetAxisRaw("Horizontal") * rSpeed;
         zSpeed = Input.GetAxisRaw("Vertical");
@@ -219,7 +241,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     // When collided with trigger object
-    private void OnTriggerEnter(Collider other)
+     void OnTriggerEnter(Collider other)
     {
         // Collided with cheese
         if (other.tag == "Cheese")
@@ -262,7 +284,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     // When collided with collider
-    private void OnCollisionEnter(Collision collision)
+     void OnCollisionEnter(Collision collision)
     {
         // If colliding with cat
         if (collision.collider.tag == "cat")
@@ -281,7 +303,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+     void OnTriggerExit(Collider other)
     {
         if (other.tag == "CameraZone")
         {
@@ -290,7 +312,10 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void CheckWin()
+    /// <summary>
+    /// Checks if the player has won
+    /// </summary>
+     void CheckWin()
     {
         // If had more than a certain amount of food
         if (foodMeter >= winCondition)
@@ -303,11 +328,17 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Kills the player
+    /// </summary>
     public void Dead()
     {
         SceneManager.LoadScene("lose");
     }
 
+    /// <summary>
+    /// Transitions out of animation
+    /// </summary>
     public void TransOut()
     {
         bool shiftKey = Input.GetKey(KeyCode.LeftShift);

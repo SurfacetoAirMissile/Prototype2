@@ -7,13 +7,16 @@ using UnityEngine.SceneManagement;
 public class AudioHandler : MonoBehaviour
 {
     // Public variables
-    public AudioSource spottedDeath;
+    [SerializeField] AudioSource spottedDeath;
 
-    private void Awake()
+    void Awake()
     {
         DontDestroyOnLoad(this);
     }
 
+    /// <summary>
+    /// Play audio if killed by cat
+    /// </summary>
     public void PlayCatDeath()
     {
         spottedDeath.Play();

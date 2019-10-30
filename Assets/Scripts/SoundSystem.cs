@@ -22,7 +22,7 @@ public class SoundSystem : MonoBehaviour
     [SerializeField] private AudioSource snapAudio;
     [SerializeField] private AudioSource heartAudio;
 
-    public bool danger;
+    public bool danger = false;
 
     private float enDist = 0.0f;
     [SerializeField] private float heartMultiply = 0.0f;
@@ -123,7 +123,10 @@ public class SoundSystem : MonoBehaviour
 
         if (playHeartbeat)
         {
-            CheckCloseDistance();
+            if (!heartAudio.isPlaying)
+            {
+                heartAudio.Play(0);
+            }
 
             if (enemy == null)
             {
@@ -139,7 +142,7 @@ public class SoundSystem : MonoBehaviour
             }
         }
 
-        if (enDist < enemyDangerZone)
+        if (enemy != null && enDist < enemyDangerZone)
         {
             danger = true;
         }
@@ -147,6 +150,8 @@ public class SoundSystem : MonoBehaviour
         {
             danger = false;
         }
+
+        CheckCloseDistance();
     }
 
     void CheckCloseDistance()

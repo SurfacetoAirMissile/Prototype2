@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.SceneManagement;
+using GamepadInput;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -74,22 +75,25 @@ public class PlayerScript : MonoBehaviour
 
      void FixedUpdate()
     {
-        bool shiftKey = Input.GetKey(KeyCode.LeftShift);
-        float verticalAxis = Input.GetAxisRaw("Vertical");
-        float horizontalAxis = Input.GetAxisRaw("Horizontal");
+        //bool shiftKey = Input.GetKey(KeyCode.LeftShift);
+        bool shiftKey = GamePad.GetButton(GamePad.Button.RightShoulder, GamePad.Index.One);
+        //float verticalAxis = Input.GetAxisRaw("Vertical");
+        //float horizontalAxis = Input.GetAxisRaw("Horizontal");
+        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+        Vector2 rightStick = GamePad.GetAxis(GamePad.Axis.RightStick, GamePad.Index.One);
 
         switch (currentState)
         {
             case playerStates.idle:
                 WalkUpdate();
-                if (verticalAxis != 0.0F || horizontalAxis != 0.0F)
+                if (leftStick.y != 0.0F || rightStick.x != 0.0F)
                 {
                     animator.SetTrigger("TriggerExitIdle");
                 }
                 break;
             case playerStates.walk:
                 WalkUpdate();
-                if (verticalAxis == 0.0F && horizontalAxis == 0.0F)
+                if (leftStick.y == 0.0F && rightStick.x == 0.0F)
                 {
                     animator.SetTrigger("TriggerStartIdle");
                 }
@@ -100,7 +104,7 @@ public class PlayerScript : MonoBehaviour
                 break;
             case playerStates.run:
                 RunUpdate();
-                if ((verticalAxis == 0.0F && horizontalAxis == 0.0F) || !shiftKey)
+                if ((leftStick.y == 0.0F && rightStick.x == 0.0F) || !shiftKey)
                 {
                     animator.SetTrigger("TriggerExitRun");
                 }
@@ -119,40 +123,6 @@ public class PlayerScript : MonoBehaviour
         }
 
     }
-
-    // Not called?
-    // void StandardUpdate()
-    //{
-    //    // Manual Drag (X and Z axis)
-    //    Vector3 vel = this.GetComponent<Rigidbody>().velocity;
-    //    vel.x *= (0.98f / drag);
-    //    vel.z *= (0.98f / drag);
-    //    this.GetComponent<Rigidbody>().velocity = vel;
-
-    //    // Update distance to ground
-    //    yBounds = this.GetComponent<CapsuleCollider>().bounds.extents.y;
-
-    //    // Jump
-    //    if (Input.GetKeyDown(KeyCode.Space))
-    //    {
-    //        Jump();
-    //    }
-
-    //    // Sprint
-    //    if (Input.GetKey(KeyCode.LeftShift))
-    //    {
-    //        // Sprinting
-    //        speed = sSpeed;
-    //    }
-    //    else
-    //    {
-    //        // Walking
-    //        speed = wSpeed;
-    //    }
-
-    //    // Horiztonal movement
-    //    MovementV2();
-    //}
 
     /// <summary>
     /// Moves the player
@@ -232,10 +202,14 @@ public class PlayerScript : MonoBehaviour
     /// </summary>
      void MovementV2()
     {
-        xSpeed = Input.GetAxisRaw("Horizontal") * rSpeed;
-        zSpeed = Input.GetAxisRaw("Vertical");
+        //xSpeed = Input.GetAxisRaw("Horizontal") * rSpeed;
+        //zSpeed = Input.GetAxisRaw("Vertical");
+        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+        Vector2 rightStick = GamePad.GetAxis(GamePad.Axis.RightStick, GamePad.Index.One);
+        xSpeed = rightStick.x;
+        zSpeed = leftStick.y;
 
-        this.transform.Rotate(new Vector3(0.0f, xSpeed, 0.0f));
+        this.transform.Rotate(new Vector3(0.0f, xSpeed * rSpeed, 0.0f));
 
         this.GetComponent<Rigidbody>().AddForce(this.transform.forward * zSpeed * speed);
     }
@@ -341,10 +315,14 @@ public class PlayerScript : MonoBehaviour
     /// </summary>
     public void TransOut()
     {
-        bool shiftKey = Input.GetKey(KeyCode.LeftShift);
-        float verticalAxis = Input.GetAxisRaw("Vertical");
-        float horizontalAxis = Input.GetAxisRaw("Horizontal");
-        if (shiftKey && (verticalAxis != 0.0F || horizontalAxis != 0.0F))
+        //bool shiftKey = Input.GetKey(KeyCode.LeftShift);
+        bool shiftKey = GamePad.GetButton(GamePad.Button.RightShoulder, GamePad.Index.One);
+        //float verticalAxis = Input.GetAxisRaw("Vertical");
+        //float horizontalAxis = Input.GetAxisRaw("Horizontal");
+        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+        Vector2 rightStick = GamePad.GetAxis(GamePad.Axis.RightStick, GamePad.Index.One);
+
+        if (shiftKey && (leftStick.y != 0.0F || rightStick.x != 0.0F))
         {
             // running
             currentState = playerStates.transInRun;
@@ -352,7 +330,7 @@ public class PlayerScript : MonoBehaviour
             //isAnimationTriggered = true;
             return;
         }
-        if (verticalAxis != 0.0F || horizontalAxis != 0.0F)
+        if (leftStick.y != 0.0F || rightStick.x != 0.0F)
         {
             // walking
             currentState = playerStates.walk;
@@ -360,7 +338,7 @@ public class PlayerScript : MonoBehaviour
             //isAnimationTriggered = true;
             return;
         }
-        if (verticalAxis == 0.0F && horizontalAxis == 0.0F)
+        if (leftStick.y == 0.0F && rightStick.x == 0.0F)
         {
             currentState = playerStates.transInIdle;
             animator.SetTrigger("TriggerStartIdle");

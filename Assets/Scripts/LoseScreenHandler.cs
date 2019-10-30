@@ -4,12 +4,9 @@ using UnityEngine;
 
 public class LoseScreenHandler : MonoBehaviour
 {
-    // Public variables
-
-
     // Audio
-    public AudioSource snapSfx;
-    public AudioSource munchSfx;
+    [SerializeField] AudioSource snapSfx;
+    [SerializeField] AudioSource munchSfx;
 
     // Start is called before the first frame update
     void Start()

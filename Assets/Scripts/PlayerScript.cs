@@ -1,17 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 using UnityEngine.SceneManagement;
+using GamepadInput;
 
 public class PlayerScript : MonoBehaviour
 {
-    public GameObject objectiveMarker;
+    // Serialised
+    [SerializeField] GameObject objectiveMarker;
+    [SerializeField] GameObject animatorChild;
+    [SerializeField] Animator animator;
+    [SerializeField] PlayerAnimatorScript animationScript;
 
-    public GameObject animatorChild;
-    public Animator animator;
-    public PlayerAnimatorScript animationScript;
-
+    // Public
     public static bool killedByRat = false;
 
     public enum playerStates
@@ -20,61 +23,82 @@ public class PlayerScript : MonoBehaviour
         idle,
         run
     }
-
-    //public bool isAnimationTriggered = false;
-
     public playerStates currentState;
 
     // Public Variables
     public Vector3 velocity = new Vector3(0, 0, 0);
-    public float xSpeed = 0.0f;
-    public float zSpeed = 0.0f;
-    public float drag = 2.0f;
-    public uint foodMeter = 0;
+    [SerializeField] float xSpeed = 0.0f;
+    [SerializeField] float zSpeed = 0.0f;
+    [SerializeField] float drag = 2.0f;
+    [SerializeField] uint foodMeter = 0;
 
     // Sounds
-    public AudioSource munchSfx;
+    [SerializeField] AudioSource munchSfx;
 
     // Private Variables
-    private float misnomer = 0.0f;
-    private int winCondition = 18;
+    /// <summary>
+    /// The bounds of the player's y
+    /// </summary>
+    float yBounds = 0.0f;
+    int winCondition = 18;
     // Movement speeds
-    private float speed = 0.0f; // Current speed
-    private const float wSpeed = 18.5f; // Walk speed
-    private const float sSpeed = 25.0f; // Sprint speed
-    // Jump Heights
-    private float jumpForce = 150.0f;
-    private float highJumpForce = 200.0f;
+    /// <summary>
+    /// Current Speed
+    /// </summary>
+    float speed = 0.0f;
+    /// <summary>
+    /// Walk Speed
+    /// </summary>
+    const float wSpeed = 18.5f;
+    /// <summary>
+    /// Sprint Speed
+    /// </summary>
+    const float sSpeed = 25.0f;
     // Rotation speeds
-    private float rSpeed = 5.0f;
+    /// <summary>
+    /// Rotation Speed
+    /// </summary>
+    float rSpeed = 5.0f;
+    // Jump Heights
+    float jumpForce = 150.0f;
+    float highJumpForce = 200.0f;
 
-    private void Awake()
+    // Buttons
+    GamePad.Button jumpButton = GamePad.Button.A;
+    GamePad.Button sprintButton = GamePad.Button.X;
+    GamePad.Button dropButton = GamePad.Button.B;
+
+     void Awake()
     {
         animator = animatorChild.GetComponent<Animator>();
         animationScript = animatorChild.GetComponent<PlayerAnimatorScript>();
     }
 
-    private void FixedUpdate()
+     void FixedUpdate()
     {
-        bool shiftKey = Input.GetKey(KeyCode.LeftShift);
-        float verticalAxis = Input.GetAxisRaw("Vertical");
-        float horizontalAxis = Input.GetAxisRaw("Horizontal");
+        //bool shiftKey = Input.GetKey(KeyCode.LeftShift);
+        bool shiftKey = GamePad.GetButton(sprintButton, GamePad.Index.One);
+        //float verticalAxis = Input.GetAxisRaw("Vertical");
+        //float horizontalAxis = Input.GetAxisRaw("Horizontal");
+        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+        //float triggers = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One);
+        //triggers -= GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One);
 
-        if (!shiftKey && (verticalAxis != 0.0F || horizontalAxis != 0.0F))
+        if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
         {
             WalkUpdate();
             animator.SetBool("Idle", false);
             animator.SetBool("Walk", true);
             animator.SetBool("Run", false);
         }
-        else if (shiftKey && (verticalAxis != 0.0F || horizontalAxis != 0.0F))
+        else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
         {
             RunUpdate();
             animator.SetBool("Idle", false);
             animator.SetBool("Walk", false);
             animator.SetBool("Run", true);
         }
-        else if (verticalAxis == 0.0F && horizontalAxis == 0.0F)
+        else if (leftStick.x == 0.0F && leftStick.y == 0.0F)
         {
             WalkUpdate();
             animator.SetBool("Idle", true);
@@ -93,7 +117,10 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    private void StandardUpdate()
+    /// <summary>
+    /// Moves the player
+    /// </summary>
+     void WalkUpdate()
     {
         // Manual Drag (X and Z axis)
         Vector3 vel = this.GetComponent<Rigidbody>().velocity;
@@ -102,43 +129,10 @@ public class PlayerScript : MonoBehaviour
         this.GetComponent<Rigidbody>().velocity = vel;
 
         // Update distance to ground
-        misnomer = this.GetComponent<CapsuleCollider>().bounds.extents.y;
+        yBounds = this.GetComponent<CapsuleCollider>().bounds.extents.y;
 
         // Jump
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
-
-        // Sprint
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            // Sprinting
-            speed = sSpeed;
-        }
-        else
-        {
-            // Walking
-            speed = wSpeed;
-        }
-
-        // Horiztonal movement
-        MovementV2();
-    }
-
-    private void WalkUpdate()
-    {
-        // Manual Drag (X and Z axis)
-        Vector3 vel = this.GetComponent<Rigidbody>().velocity;
-        vel.x *= (0.98f / drag);
-        vel.z *= (0.98f / drag);
-        this.GetComponent<Rigidbody>().velocity = vel;
-
-        // Update distance to ground
-        misnomer = this.GetComponent<CapsuleCollider>().bounds.extents.y;
-
-        // Jump
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (GamePad.GetButton(jumpButton, GamePad.Index.One))
         {
             Jump();
         }
@@ -146,10 +140,13 @@ public class PlayerScript : MonoBehaviour
         speed = wSpeed;
 
         // Horiztonal movement
-        MovementV2();
+        MovementV3();
     }
 
-    private void RunUpdate()
+    /// <summary>
+    /// Moves the player when sprinting
+    /// </summary>
+     void RunUpdate()
     {
         // Manual Drag (X and Z axis)
         Vector3 vel = this.GetComponent<Rigidbody>().velocity;
@@ -158,10 +155,10 @@ public class PlayerScript : MonoBehaviour
         this.GetComponent<Rigidbody>().velocity = vel;
 
         // Update distance to ground
-        misnomer = this.GetComponent<CapsuleCollider>().bounds.extents.y;
+        yBounds = this.GetComponent<CapsuleCollider>().bounds.extents.y;
 
         // Jump
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (GamePad.GetButton(jumpButton, GamePad.Index.One))
         {
             Jump();
         }
@@ -169,15 +166,18 @@ public class PlayerScript : MonoBehaviour
         speed = sSpeed;
 
         // Horiztonal movement
-        MovementV2();
+        MovementV3();
     }
 
-    private void Jump()
+    /// <summary>
+    /// Makes the player jump
+    /// </summary>
+     void Jump()
     {
         // If touching the ground
-        if (Physics.Raycast(this.transform.position, -Vector3.up, misnomer + 0.1f))
+        if (Physics.Raycast(this.transform.position, -Vector3.up, yBounds + 0.1f))
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (GamePad.GetButton(sprintButton, GamePad.Index.One))
             {
                 // High Jump
                 this.GetComponent<Rigidbody>().AddForce(Vector3.up * highJumpForce);
@@ -190,18 +190,74 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void MovementV2()
+    // 'classic' tank controls
+    /// <summary>
+    /// Checks for input for movement
+    /// </summary>
+     void MovementV2()
     {
-        xSpeed = Input.GetAxisRaw("Horizontal") * rSpeed;
-        zSpeed = Input.GetAxisRaw("Vertical");
+        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+        Vector2 rightStick = GamePad.GetAxis(GamePad.Axis.RightStick, GamePad.Index.One);
+        xSpeed = leftStick.x;
+        zSpeed = leftStick.y;
 
-        this.transform.Rotate(new Vector3(0.0f, xSpeed, 0.0f));
+        this.transform.Rotate(new Vector3(0.0f, xSpeed * rSpeed, 0.0f));
 
         this.GetComponent<Rigidbody>().AddForce(this.transform.forward * zSpeed * speed);
     }
+    // WASD controls (W is back wall)
+    void MovementV1()
+    {
+        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+
+        Vector3 movement = new Vector3(leftStick.x, 0.0f, leftStick.y);
+
+        if (leftStick.x != 0.0f || leftStick.y != 0.0f)
+        {
+            this.GetComponent<Rigidbody>().AddForce(movement * speed);
+        }
+    }
+    // Racing controls
+    void MovementV3()
+    {
+        //GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
+
+        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+        Vector2 rightStick = GamePad.GetAxis(GamePad.Axis.RightStick, GamePad.Index.One);
+
+        //zSpeed = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One);
+        //zSpeed -= GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One);
+        //xSpeed = leftStick.x;
+
+        /*
+        if (GamePad.GetButton(GamePad.Button.RightStick, GamePad.Index.One))
+        {
+            Camera.main.GetComponent<CinemachineFreeLook>().m_YAxis = ;
+        }
+        */
+
+        if (leftStick.x != 0.0f || leftStick.y != 0.0f)
+        {
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0.0f;
+            cameraForward.Normalize();
+
+            Vector3 cameraRight = Camera.main.transform.right;
+            cameraRight.y = 0.0f;
+            cameraRight.Normalize();
+            
+            Vector3 motionDirection = leftStick.x * cameraRight + leftStick.y * cameraForward;
+            this.transform.forward = motionDirection;
+            //this.transform.Rotate(new Vector3(0.0f, xSpeed * rSpeed, 0.0f));
+            this.GetComponent<Rigidbody>().AddForce(this.transform.forward * speed);
+
+        }
+
+
+    }
 
     // When collided with trigger object
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         // Collided with cheese
         if (other.tag == "Cheese")
@@ -244,7 +300,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     // When collided with collider
-    private void OnCollisionEnter(Collision collision)
+     void OnCollisionEnter(Collision collision)
     {
         // If colliding with cat
         if (collision.collider.tag == "cat")
@@ -263,16 +319,19 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+     void OnTriggerExit(Collider other)
     {
         if (other.tag == "CameraZone")
         {
-            GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
-            camera.GetComponent<CameraScript>().UpdatePlayerPosition(other.gameObject.GetComponent<BoxCollider>(), false);
+            //GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
+            //camera.GetComponent<CameraScript>().UpdatePlayerPosition(other.gameObject.GetComponent<BoxCollider>(), false);
         }
     }
 
-    private void CheckWin()
+    /// <summary>
+    /// Checks if the player has won
+    /// </summary>
+     void CheckWin()
     {
         // If had more than a certain amount of food
         if (foodMeter >= winCondition)
@@ -285,17 +344,28 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Kills the player
+    /// </summary>
     public void Dead()
     {
         SceneManager.LoadScene("lose");
     }
 
+    /// <summary>
+    /// Transitions out of animation
+    /// </summary>
     public void TransOut()
     {
-        bool shiftKey = Input.GetKey(KeyCode.LeftShift);
-        float verticalAxis = Input.GetAxisRaw("Vertical");
-        float horizontalAxis = Input.GetAxisRaw("Horizontal");
-        if (shiftKey && (verticalAxis != 0.0F || horizontalAxis != 0.0F))
+        //bool shiftKey = Input.GetKey(KeyCode.LeftShift);
+        bool shiftKey = GamePad.GetButton(sprintButton, GamePad.Index.One);
+        //float verticalAxis = Input.GetAxisRaw("Vertical");
+        //float horizontalAxis = Input.GetAxisRaw("Horizontal");
+        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+        float triggers = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One);
+        triggers -= GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One);
+
+        if (shiftKey && (leftStick.x != 0.0F || triggers != 0.0F))
         {
             // running
             //currentState = playerStates.transInRun;
@@ -303,7 +373,7 @@ public class PlayerScript : MonoBehaviour
             //isAnimationTriggered = true;
             return;
         }
-        if (verticalAxis != 0.0F || horizontalAxis != 0.0F)
+        if (leftStick.x != 0.0F || triggers != 0.0F)
         {
             // walking
             currentState = playerStates.walk;
@@ -311,7 +381,7 @@ public class PlayerScript : MonoBehaviour
             //isAnimationTriggered = true;
             return;
         }
-        if (verticalAxis == 0.0F && horizontalAxis == 0.0F)
+        if (leftStick.x == 0.0F && triggers == 0.0F)
         {
             //currentState = playerStates.transInIdle;
             animator.SetTrigger("TriggerStartIdle");

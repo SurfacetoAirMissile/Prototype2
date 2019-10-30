@@ -4,18 +4,26 @@ using UnityEngine;
 
 public class MouseTrapScript : MonoBehaviour
 {
-    // Public variables
-    public Mesh trapReadyModel;
-    public Mesh trapSprungModel;
+    // Public
+    /// <summary>
+    /// If the player was killed by a trap
+    /// </summary>
     public static bool killedByTrap = false;
 
+    // Serialized
+    [SerializeField] Mesh trapReadyModel;
+    [SerializeField] Mesh trapSprungModel;
+
     // Audio
-    public AudioSource snapSfx;
+    [SerializeField] AudioSource snapSfx;
 
     // Private variables
-    private bool isActive = true;
+    /// <summary>
+    /// Mouse trap is active and is able to be triggered
+    /// </summary>
+    bool isActive = true;
 
-    private void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
         if (isActive)
         {
@@ -38,7 +46,7 @@ public class MouseTrapScript : MonoBehaviour
         }
     }
 
-    private void TriggerTrap()
+    void TriggerTrap()
     {
         this.GetComponent<MeshFilter>().mesh = trapSprungModel;
 

@@ -5,32 +5,41 @@ using UnityEngine;
 public class CatScript : MonoBehaviour
 {
     // Public variables
-    public GameObject pointA;
-    public GameObject pointB;
+    [SerializeField] GameObject pointA;
+    [SerializeField] GameObject pointB;
 
     // Private variables
-    private const float turnSpeed = 2.0f; // Speed the cat turns
-    private GameObject followPoint;
-    private const float speed = 25.0f;
-    private Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
-    private const float angle = 5.0f;
-    private const float viewAngle = 90.0f;
+    const float turnSpeed = 2.0f; // Speed the cat turns
+    /// <summary>
+    /// Current point being followed
+    /// </summary>
+    GameObject followPoint;
+    const float speed = 25.0f;
+    Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
+    /// <summary>
+    /// Deadzone for turning (Stops it indefinitely turning
+    /// </summary>
+    const float angle = 5.0f;
+    /// <summary>
+    /// Angle that it see the player in
+    /// </summary>
+    const float viewAngle = 90.0f;
 
     // Timer
-    private float timerMax = 5.0f; // In seconds
-    private float waitTimer = 0.0f;
+    float timerMax = 5.0f; // In seconds
+    float waitTimer = 0.0f;
     
-    private enum State
+    enum State
     {
         TURNING, // Is stationary and turning
         WALKING, // Is walking in a straight line to next point
         WAITING, // Is sitting still watching for a mouse/rat
         HUNTING // Is chasing player (For Sam?)
     }
-    private State catState = State.WALKING;
+    State catState = State.WALKING;
 
     // Start function
-    private void Start()
+    void Awake()
     {
         // Set default follow point
         followPoint = pointA;
@@ -40,7 +49,7 @@ public class CatScript : MonoBehaviour
     }
 
     // Update function
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         // If cat can see player
         if (CanSeePlayer())
@@ -141,7 +150,11 @@ public class CatScript : MonoBehaviour
         }
     }
 
-    private bool CanSeePlayer()
+    /// <summary>
+    /// Returns true if the cat can see the player, false if not
+    /// </summary>
+    /// <returns></returns>
+    bool CanSeePlayer()
     {
         GameObject oPlayer = GameObject.Find("Player");
         RaycastHit hit;
@@ -171,8 +184,10 @@ public class CatScript : MonoBehaviour
         return false;
     }
 
-    // Swaps points to follow
-    private void SwapPoints()
+    /// <summary>
+    /// Swaps the point that is to be followed
+    /// </summary>
+    void SwapPoints()
     {
         if (followPoint == pointA)
         {

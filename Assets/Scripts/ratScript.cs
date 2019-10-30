@@ -4,11 +4,7 @@ using UnityEngine;
 
 public class ratScript : MonoBehaviour
 {
-    private Rigidbody body;
-
-    public float torqueConstant;
-    public float forceConstant;
-
+    // Public
     public enum ratStates
     {
         patrol,
@@ -16,16 +12,29 @@ public class ratScript : MonoBehaviour
         dead,
         idle
     }
-
     public ratStates currentState;
 
-    private const float viewAngle = 90.0f;
+    // Serialized Field
+    [SerializeField] float torqueConstant;
+    [SerializeField] float forceConstant;
+    /// <summary>
+    /// AI follow path reference
+    /// </summary>
+    [SerializeField] GameObject pathContainer;
 
-    public GameObject pathContainer;
-    private List<Transform> path;
+    // Private
+    Rigidbody body;
+    /// <summary>
+    /// Angle in which it can view the player directly ahead of it
+    /// </summary>
+    const float viewAngle = 90.0f;
+    List<Transform> path;
+    /// <summary>
+    /// Currently followed node on path index
+    /// </summary>
     int targetNode = 0;
 
-    private void Awake()
+    void Awake()
     {
         body = GetComponent<Rigidbody>();
         // if the rat has a path
@@ -41,16 +50,9 @@ public class ratScript : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    // Update is called once per frame (Should be fixed)
     void Update()
     {
-
         // state machine
         switch (currentState)
         {
@@ -81,14 +83,14 @@ public class ratScript : MonoBehaviour
             default:
                 break;
         }
-
-
-        
     }
 
-    // This function will rotate the rat to face the position and the push the rat towards the point
-    // Returns false if the rat is already at the position.
-    private bool MoveTowardsPosXZ(Vector3 point)
+    /// <summary>
+    /// Turns rat to face player and pushes them forward. Returns false if at player.
+    /// </summary>
+    /// <param name="point"> Point that it needs to follow i.e. the player </param>
+    /// <returns></returns>
+    bool MoveTowardsPosXZ(Vector3 point)
     {
         bool returnValue = true;
         Vector2 pointXZ = new Vector2(point.x, point.z);
@@ -190,20 +192,30 @@ public class ratScript : MonoBehaviour
         return returnValue;
     }
 
-    private Vector3 GetTargetNodePosition()
+    /// <summary>
+    /// Returns the currently followed node's position
+    /// </summary>
+    /// <returns></returns>
+    Vector3 GetTargetNodePosition()
     {
         return path[targetNode].position;
     }
 
-    // Rat is killed
+    /// <summary>
+    /// Kills the rat
+    /// </summary>
     public void Killed()
     {
         // Change state
         currentState = ratStates.dead;
     }
 
-    // Returns false if the rat is already at the position.
-    private bool SmoothMovementPosXZ(Vector3 point)
+    /// <summary>
+    /// Moves towards a point smoothly. Returns false if already at point.
+    /// </summary>
+    /// <param name="point"> Point that it needs to follow. i.e. the player </param>
+    /// <returns></returns>
+    bool SmoothMovementPosXZ(Vector3 point)
     {
         bool returnValue = true;
         RotateTowardsPosXZ(point);
@@ -214,7 +226,11 @@ public class ratScript : MonoBehaviour
         return returnValue;
     }
 
-    private void RotateTowardsPosXZ(Vector3 point)
+    /// <summary>
+    /// Rotates towards a point
+    /// </summary>
+    /// <param name="point"> The point it needs to rotate towards </param>
+    void RotateTowardsPosXZ(Vector3 point)
     {
         Vector2 pointXZ = new Vector2(point.x, point.z);
 
@@ -292,7 +308,12 @@ public class ratScript : MonoBehaviour
         }
     }
 
-    private bool VariablePushTowardsPosXZ(Vector3 point)
+    /// <summary>
+    /// Pushes rat towards the point
+    /// </summary>
+    /// <param name="point"> Point that needs to be pushed towards </param>
+    /// <returns></returns>
+    bool VariablePushTowardsPosXZ(Vector3 point)
     {
         bool returnValue = true;
         Vector2 pointXZ = new Vector2(point.x, point.z);
@@ -323,7 +344,11 @@ public class ratScript : MonoBehaviour
         return returnValue;
     }
 
-    private bool CanSeePlayer()
+    /// <summary>
+    /// Returns true if the rat can see the player, false if not
+    /// </summary>
+    /// <returns></returns>
+    bool CanSeePlayer()
     {
         GameObject oPlayer = GameObject.Find("Player");
         RaycastHit hit;
@@ -347,7 +372,11 @@ public class ratScript : MonoBehaviour
         return false;
     }
 
-    private bool PlayerInLineOfSight()
+    /// <summary>
+    /// Checks if the player is in the rat's line of sight
+    /// </summary>
+    /// <returns></returns>
+    bool PlayerInLineOfSight()
     {
         GameObject oPlayer = GameObject.Find("Player");
         RaycastHit hit;

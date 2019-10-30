@@ -18,12 +18,7 @@ public class PlayerScript : MonoBehaviour
     {
         walk,
         idle,
-        transInIdle,
-        transOutIdle,
-        run,
-        transInRun,
-        transOutRun,
-
+        run
     }
 
     //public bool isAnimationTriggered = false;
@@ -65,39 +60,26 @@ public class PlayerScript : MonoBehaviour
         float verticalAxis = Input.GetAxisRaw("Vertical");
         float horizontalAxis = Input.GetAxisRaw("Horizontal");
 
-        switch (currentState)
+        if (!shiftKey && (verticalAxis != 0.0F || horizontalAxis != 0.0F))
         {
-            case playerStates.idle:
-                WalkUpdate();
-                if (verticalAxis != 0.0F || horizontalAxis != 0.0F)
-                {
-                    animator.SetTrigger("TriggerExitIdle");
-                    //isAnimationTriggered = true;
-                }
-                break;
-            case playerStates.walk:
-                WalkUpdate();
-                if (verticalAxis == 0.0F && horizontalAxis == 0.0F)
-                {
-                    animator.SetTrigger("TriggerStartIdle");
-                    //isAnimationTriggered = true;
-                }
-                if (shiftKey)
-                {
-                    animator.SetTrigger("TriggerStartRun");
-                    //isAnimationTriggered = true;
-                }
-                break;
-            case playerStates.run:
-                RunUpdate();
-                if ((verticalAxis == 0.0F && horizontalAxis == 0.0F) || !shiftKey)
-                {
-                    animator.SetTrigger("TriggerExitRun");
-                    //isAnimationTriggered = true;
-                }
-                break;
-            default:
-                break;
+            WalkUpdate();
+            animator.SetBool("Idle", false);
+            animator.SetBool("Walk", true);
+            animator.SetBool("Run", false);
+        }
+        else if (shiftKey && (verticalAxis != 0.0F || horizontalAxis != 0.0F))
+        {
+            RunUpdate();
+            animator.SetBool("Idle", false);
+            animator.SetBool("Walk", false);
+            animator.SetBool("Run", true);
+        }
+        else if (verticalAxis == 0.0F && horizontalAxis == 0.0F)
+        {
+            WalkUpdate();
+            animator.SetBool("Idle", true);
+            animator.SetBool("Walk", false);
+            animator.SetBool("Run", false);
         }
 
         if (foodMeter >= 18)
@@ -249,8 +231,8 @@ public class PlayerScript : MonoBehaviour
 
         if (other.tag == "CameraZone")
         {
-            GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
-            camera.GetComponent<CameraScript>().UpdatePlayerPosition(other.gameObject.GetComponent<BoxCollider>(), true);
+            //GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
+            //camera.GetComponent<CameraScript>().UpdatePlayerPosition(other.gameObject.GetComponent<BoxCollider>(), true);
         }
 
         // When player reaches home
@@ -316,7 +298,7 @@ public class PlayerScript : MonoBehaviour
         if (shiftKey && (verticalAxis != 0.0F || horizontalAxis != 0.0F))
         {
             // running
-            currentState = playerStates.transInRun;
+            //currentState = playerStates.transInRun;
             animator.SetTrigger("TriggerStartRun");
             //isAnimationTriggered = true;
             return;
@@ -331,7 +313,7 @@ public class PlayerScript : MonoBehaviour
         }
         if (verticalAxis == 0.0F && horizontalAxis == 0.0F)
         {
-            currentState = playerStates.transInIdle;
+            //currentState = playerStates.transInIdle;
             animator.SetTrigger("TriggerStartIdle");
             //isAnimationTriggered = true;
             return;

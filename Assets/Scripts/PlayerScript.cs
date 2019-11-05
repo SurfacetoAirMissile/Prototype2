@@ -65,7 +65,10 @@ public class PlayerScript : MonoBehaviour
 
     // Buttons
     GamePad.Button jumpButton = GamePad.Button.A;
-    GamePad.Button sprintButton = GamePad.Button.X;
+    /// <summary>
+    /// True if sprint button is held, false if not
+    /// </summary>
+    bool shiftKey = false;
     GamePad.Button dropButton = GamePad.Button.B;
 
      void Awake()
@@ -77,7 +80,7 @@ public class PlayerScript : MonoBehaviour
      void FixedUpdate()
     {
         //bool shiftKey = Input.GetKey(KeyCode.LeftShift);
-        bool shiftKey = GamePad.GetButton(sprintButton, GamePad.Index.One);
+        shiftKey = (GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) < 0.5f) ? false : true;
         //float verticalAxis = Input.GetAxisRaw("Vertical");
         //float horizontalAxis = Input.GetAxisRaw("Horizontal");
         Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
@@ -177,7 +180,7 @@ public class PlayerScript : MonoBehaviour
         // If touching the ground
         if (Physics.Raycast(this.transform.position, -Vector3.up, yBounds + 0.1f))
         {
-            if (GamePad.GetButton(sprintButton, GamePad.Index.One))
+            if (shiftKey)
             {
                 // High Jump
                 this.GetComponent<Rigidbody>().AddForce(Vector3.up * highJumpForce);
@@ -358,7 +361,6 @@ public class PlayerScript : MonoBehaviour
     public void TransOut()
     {
         //bool shiftKey = Input.GetKey(KeyCode.LeftShift);
-        bool shiftKey = GamePad.GetButton(sprintButton, GamePad.Index.One);
         //float verticalAxis = Input.GetAxisRaw("Vertical");
         //float horizontalAxis = Input.GetAxisRaw("Horizontal");
         Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);

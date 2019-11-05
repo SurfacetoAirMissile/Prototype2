@@ -6,9 +6,13 @@ using UnityEngine.UI;
 
 public class UIscript : MonoBehaviour
 {
-    // Public sprites
-    public Sprite[] sprites;
+    // Serialized
+    [SerializeField] Sprite[] sprites;
 
+    /// <summary>
+    /// Updates the HUD
+    /// </summary>
+    /// <param name="newFoodNum"></param>
     public void UpdateSprites(uint newFoodNum)
     {
         // Less than full

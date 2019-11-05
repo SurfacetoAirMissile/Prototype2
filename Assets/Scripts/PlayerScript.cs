@@ -57,8 +57,7 @@ public class PlayerScript : MonoBehaviour
     /// </summary>
     float rSpeed = 5.0f;
     // Jump Heights
-    float jumpForce = 150.0f;
-    float highJumpForce = 200.0f;
+    float jumpForce = 50.0f;
 
     // Buttons
     GamePad.Button jumpButton = GamePad.Button.A;
@@ -167,18 +166,10 @@ public class PlayerScript : MonoBehaviour
      void Jump()
     {
         // If touching the ground
-        if (Physics.Raycast(this.transform.position, -Vector3.up, yBounds + 0.1f))
+        if (Physics.Raycast(this.transform.position, -Vector3.up, yBounds))
         {
-            if (shiftKey)
-            {
-                // High Jump
-                this.GetComponent<Rigidbody>().AddForce(Vector3.up * highJumpForce);
-            }
-            else
-            {
-                // Normal Jump
-                this.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce);
-            }
+            // Normal Jump
+            this.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce);
         }
     }
 

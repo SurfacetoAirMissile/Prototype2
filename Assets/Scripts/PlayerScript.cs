@@ -9,13 +9,21 @@ using GamepadInput;
 public class PlayerScript : MonoBehaviour
 {
     // Serialised
-    [SerializeField] GameObject objectiveMarker;
     [SerializeField] GameObject animatorChild;
     [SerializeField] Animator animator;
     [SerializeField] PlayerAnimatorScript animationScript;
+    [SerializeField] GameObject arrow;
+    [SerializeField] float xSpeed = 0.0f;
+    [SerializeField] float zSpeed = 0.0f;
+    [SerializeField] float drag = 2.0f;
+
+    // Sounds
+    [SerializeField] AudioSource munchSfx;
 
     // Public
     public static bool killedByRat = false;
+    public Vector3 velocity = new Vector3(0, 0, 0);
+    public bool cheeseHeld = false;
 
     public enum playerStates
     {
@@ -25,22 +33,11 @@ public class PlayerScript : MonoBehaviour
     }
     public playerStates currentState;
 
-    // Public Variables
-    public Vector3 velocity = new Vector3(0, 0, 0);
-    [SerializeField] float xSpeed = 0.0f;
-    [SerializeField] float zSpeed = 0.0f;
-    [SerializeField] float drag = 2.0f;
-    [SerializeField] uint foodMeter = 0;
-
-    // Sounds
-    [SerializeField] AudioSource munchSfx;
-
     // Private Variables
     /// <summary>
     /// The bounds of the player's y
     /// </summary>
     float yBounds = 0.0f;
-    int winCondition = 18;
     // Movement speeds
     /// <summary>
     /// Current Speed
@@ -70,6 +67,7 @@ public class PlayerScript : MonoBehaviour
     /// </summary>
     bool shiftKey = false;
     GamePad.Button dropButton = GamePad.Button.B;
+    GamePad.Button senseButton = GamePad.Button.Y;
 
      void Awake()
     {
@@ -79,43 +77,41 @@ public class PlayerScript : MonoBehaviour
 
      void FixedUpdate()
     {
-        //bool shiftKey = Input.GetKey(KeyCode.LeftShift);
         shiftKey = (GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) < 0.5f) ? false : true;
-        //float verticalAxis = Input.GetAxisRaw("Vertical");
-        //float horizontalAxis = Input.GetAxisRaw("Horizontal");
         Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
-        //float triggers = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One);
-        //triggers -= GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One);
 
-        if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
+        // Only be able to move if sense is not being held
+        if (!GamePad.GetButton(senseButton, GamePad.Index.One))
         {
-            WalkUpdate();
-            animator.SetBool("Idle", false);
-            animator.SetBool("Walk", true);
-            animator.SetBool("Run", false);
-        }
-        else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
-        {
-            RunUpdate();
-            animator.SetBool("Idle", false);
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", true);
-        }
-        else if (leftStick.x == 0.0F && leftStick.y == 0.0F)
-        {
-            WalkUpdate();
-            animator.SetBool("Idle", true);
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", false);
-        }
+            UpdateArrow(false);
 
-        if (foodMeter >= 18)
-        {
-            objectiveMarker.GetComponent<MeshRenderer>().enabled = true;
+            if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
+            {
+                WalkUpdate();
+                animator.SetBool("Idle", false);
+                animator.SetBool("Walk", true);
+                animator.SetBool("Run", false);
+            }
+            else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
+            {
+                RunUpdate();
+                animator.SetBool("Idle", false);
+                animator.SetBool("Walk", false);
+                animator.SetBool("Run", true);
+            }
+            else if (leftStick.x == 0.0F && leftStick.y == 0.0F)
+            {
+                WalkUpdate();
+                animator.SetBool("Idle", true);
+                animator.SetBool("Walk", false);
+                animator.SetBool("Run", false);
+            }
         }
+        // Sense is being held
         else
         {
-            objectiveMarker.GetComponent<MeshRenderer>().enabled = false;
+            UpdateArrow(true);
+            // Set animation
         }
 
     }
@@ -263,29 +259,11 @@ public class PlayerScript : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         // Collided with cheese
-        if (other.tag == "Cheese")
+        if (other.tag == "Cheese" && !cheeseHeld)
         {
             // Destroy collectable
             Destroy(other.gameObject);
-
-            foodMeter += 4;
-
-            munchSfx.Play();
-
-            GameObject.Find("Image").GetComponent<UIscript>().UpdateSprites(foodMeter);
-        }
-
-        // Collided with bread
-        if (other.tag == "Bread")
-        {
-            // Destroy the bread
-            Destroy(other.gameObject);
-
-            foodMeter += 1;
-
-            munchSfx.Play();
-
-            GameObject.Find("Image").GetComponent<UIscript>().UpdateSprites(foodMeter);
+            cheeseHeld = true;
         }
 
         if (other.tag == "CameraZone")
@@ -331,13 +309,27 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    void UpdateArrow(bool IsActive)
+    {
+        // Being set to active but is not currently active
+        if (IsActive && !arrow.GetComponent<MeshRenderer>().enabled)
+        {
+            arrow.GetComponent<MeshRenderer>().enabled = true;
+        }
+        // Being turned off and is currently on
+        else if (!IsActive && arrow.GetComponent<arrowScript>().enabled)
+        {
+            arrow.GetComponent<MeshRenderer>().enabled = false;
+        }
+    }
+
     /// <summary>
     /// Checks if the player has won
     /// </summary>
      void CheckWin()
     {
         // If had more than a certain amount of food
-        if (foodMeter >= winCondition)
+        if (cheeseHeld)
         {
             SceneManager.LoadScene("win");
         }

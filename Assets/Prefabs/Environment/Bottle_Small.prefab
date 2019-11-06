@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7502250656767772887}
   - component: {fileID: 1533017753678164705}
   - component: {fileID: 5078607843722087960}
+  - component: {fileID: 874600623612227435}
   m_Layer: 0
   m_Name: Bottle_Small
   m_TagString: Untagged
@@ -57,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5561349426305759274, guid: 74d3f39153ebf6448a76963050136aa6, type: 3}
+  - {fileID: 2100000, guid: 24c3916529f69d0429ab00024f84c129, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -77,3 +78,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &874600623612227435
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6793118057171745476}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 6467193280233984673, guid: 74d3f39153ebf6448a76963050136aa6, type: 3}

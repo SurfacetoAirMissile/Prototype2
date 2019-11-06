@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2289118135893831884}
   - component: {fileID: 7106559746413693690}
   - component: {fileID: 3576732235755156995}
+  - component: {fileID: 8983703767417891401}
   m_Layer: 0
   m_Name: Candle_Stack
   m_TagString: Untagged
@@ -57,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5561349426305759274, guid: 58988d42130a86443bcc0c9076880190, type: 3}
+  - {fileID: 2100000, guid: 795b782664082724b84addec30119f6b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -77,3 +78,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &8983703767417891401
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2999341311452889823}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: -1868944925297029885, guid: 58988d42130a86443bcc0c9076880190, type: 3}

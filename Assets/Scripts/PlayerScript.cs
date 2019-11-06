@@ -52,6 +52,10 @@ public class PlayerScript : MonoBehaviour
     /// Sprint Speed
     /// </summary>
     const float sSpeed = 25.0f;
+    /// <summary>
+    /// Speed while carrying cheese
+    /// </summary>
+    const float carrySpeed = 10.5f;
     // Rotation speeds
     /// <summary>
     /// Rotation Speed
@@ -143,7 +147,14 @@ public class PlayerScript : MonoBehaviour
             Jump();
         }
 
-        speed = wSpeed;
+        if (cheeseHeld)
+        {
+            speed = carrySpeed;
+        }
+        else
+        {
+            speed = wSpeed;
+        }
 
         // Horiztonal movement
         MovementV3();
@@ -169,7 +180,14 @@ public class PlayerScript : MonoBehaviour
             Jump();
         }
 
-        speed = sSpeed;
+        if (cheeseHeld)
+        {
+            speed = carrySpeed;
+        }
+        else
+        {
+            speed = sSpeed;
+        }
 
         // Horiztonal movement
         MovementV3();

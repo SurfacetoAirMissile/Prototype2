@@ -5,29 +5,23 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
-    public GameObject player;
-    public GameObject zoneManagerObject;
-    
-    public Dictionary<int, Vector3> cameraPositions;
-    public Dictionary<int, BoxCollider> zones;
-    public Dictionary<int, bool> playerIsInZone;
+    [SerializeField] GameObject player;
+    [SerializeField] GameObject zoneManagerObject;
+    [SerializeField] Dictionary<int, Vector3> cameraPositions;
+    [SerializeField] Dictionary<int, BoxCollider> zones;
+    [SerializeField] Dictionary<int, bool> playerIsInZone;
+    [SerializeField] int currentZone = 0;
+    [SerializeField] float cameraStopwatch;
+    [SerializeField] float cameraForceConstant;
 
-    public int currentZone = 0;
-
-    public float cameraStopwatch;
-
-    public float cameraForceConstant;
-
-    public enum CameraStates
+    [SerializeField] enum CameraStates
     {
         CAMERA_STATIONARY,
         CAMERA_MOVING
     }
-
-    public CameraStates currentState = CameraStates.CAMERA_STATIONARY;
-
-    public Vector3 cameraMoveTarget;
-    public int zoneTarget;
+    [SerializeField] CameraStates currentState = CameraStates.CAMERA_STATIONARY;
+    [SerializeField] Vector3 cameraMoveTarget;
+    [SerializeField] int zoneTarget;
 
     void Awake()
     {
@@ -110,8 +104,12 @@ public class CameraScript : MonoBehaviour
         LookAtPlayer();
     }
     
-    // Applies a force to the camera in the direction of the position _target
-    private bool PushCameraTowards(Vector3 _target)
+    /// <summary>
+    /// Pushes camera towards a given point
+    /// </summary>
+    /// <param name="_target"> Point that camera is pushed towards </param>
+    /// <returns></returns>
+    bool PushCameraTowards(Vector3 _target)
     {
         bool returnValue = false;
         // Makes sure that we're not already at the target.
@@ -149,37 +147,61 @@ public class CameraScript : MonoBehaviour
         return returnValue;
     }
 
-    private void TeleportCameraTo(Vector3 _target)
+    /// <summary>
+    /// Teleports camera to a point
+    /// </summary>
+    /// <param name="_target"> Point that camera is to be teleported to </param>
+    void TeleportCameraTo(Vector3 _target)
     {
         transform.position = _target;
     }
 
-    private void MoveCameraTo(Vector3 _target)
+    /// <summary>
+    /// Sets state so camera moves towards a given point
+    /// </summary>
+    /// <param name="_target"> Point that camera is to be moved towards </param>
+    void MoveCameraTo(Vector3 _target)
     {
         // need to define where we're going
         cameraMoveTarget = _target;
         currentState = CameraStates.CAMERA_MOVING;
     }
-    private void MoveCameraToZone(int _zone)
-    {
 
+    /// <summary>
+    /// Sets state so that camera moves towards a given zone
+    /// </summary>
+    /// <param name="_zone"> Zone index that is to be moved towards </param>
+    void MoveCameraToZone(int _zone)
+    {
         cameraMoveTarget = cameraPositions[_zone];
         zoneTarget = _zone;
         currentState = CameraStates.CAMERA_MOVING;
     }
 
-    private void LookAt(Vector3 _target)
+    /// <summary>
+    /// Look at a target
+    /// </summary>
+    /// <param name="_target"> To be looked at </param>
+    void LookAt(Vector3 _target)
     {
         // Turns the camera to _target
         transform.LookAt(_target);
     }
 
-    private void LookAtPlayer()
+    /// <summary>
+    /// Looks at the player
+    /// </summary>
+    void LookAtPlayer()
     {
         // Turns the camera to _target
         transform.LookAt(player.transform.position);
     }
 
+    /// <summary>
+    /// Updates and checks which zone the player is in
+    /// </summary>
+    /// <param name="zone"> Zone collider to check </param>
+    /// <param name="isInZone"> Changed value if in zone or not </param>
     public void UpdatePlayerPosition(BoxCollider zone, bool isInZone)
     {
         for (int i = 0; i < zones.Count; i++)
@@ -191,7 +213,11 @@ public class CameraScript : MonoBehaviour
         }
     }
 
-    private int GetPlayerZone()
+    /// <summary>
+    /// Gets the zone the player is in
+    /// </summary>
+    /// <returns></returns>
+    int GetPlayerZone()
     {
         for (int i = 0; i < zones.Count; i++)
         {
@@ -203,7 +229,11 @@ public class CameraScript : MonoBehaviour
         return 0;
     }
 
-    private Vector3 GetCurrentCameraPosition()
+    /// <summary>
+    /// Returns the current camera position
+    /// </summary>
+    /// <returns></returns>
+    Vector3 GetCurrentCameraPosition()
     {
         return cameraPositions[GetPlayerZone()];
     }

@@ -77,26 +77,39 @@ public class PlayerScript : MonoBehaviour
      void FixedUpdate()
     {
         shiftKey = (GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) < 0.5f) ? false : true;
+        if (!shiftKey) { shiftKey = Input.GetKey("left shift"); }
         Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
-
-        UpdateAnimations();
-
+        float kbForward = Input.GetAxis("kbForward");
+        float kbRight = Input.GetAxis("kbRight");
+        
         // Only be able to move if sense is not being held
         if (!GamePad.GetButton(senseButton, GamePad.Index.One))
         {
             UpdateArrow(false);
 
-            if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
+            if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
             {
                 WalkUpdate();
+                // Set animation
+                animator.SetBool("Idle", false);
+                animator.SetBool("Walk", true);
+                animator.SetBool("Run", false);
             }
-            else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
+            else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
             {
                 RunUpdate();
+                // Set animation
+                animator.SetBool("Idle", false);
+                animator.SetBool("Walk", false);
+                animator.SetBool("Run", true);
             }
-            else if (leftStick.x == 0.0F && leftStick.y == 0.0F)
+            else if (leftStick.x == 0.0F && leftStick.y == 0.0F && kbForward == 0.0f && kbRight == 0.0f)
             {
                 WalkUpdate();
+                // Set animation
+                animator.SetBool("Idle", true);
+                animator.SetBool("Walk", false);
+                animator.SetBool("Run", false);
             }
         }
         // Sense is being held
@@ -104,6 +117,9 @@ public class PlayerScript : MonoBehaviour
         {
             UpdateArrow(true);
             // Set animation
+            animator.SetBool("Idle", true);
+            animator.SetBool("Walk", false);
+            animator.SetBool("Run", false);
         }
 
     }
@@ -150,6 +166,10 @@ public class PlayerScript : MonoBehaviour
 
         // Jump
         if (GamePad.GetButton(jumpButton, GamePad.Index.One))
+        {
+            Jump();
+        }
+        if (Input.GetKey("space"))
         {
             Jump();
         }
@@ -206,7 +226,9 @@ public class PlayerScript : MonoBehaviour
         //GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
 
         Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
-        Vector2 rightStick = GamePad.GetAxis(GamePad.Axis.RightStick, GamePad.Index.One);
+
+        float kbForward = Input.GetAxis("kbForward");
+        float kbRight = Input.GetAxis("kbRight");
 
         //zSpeed = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One);
         //zSpeed -= GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One);
@@ -233,10 +255,23 @@ public class PlayerScript : MonoBehaviour
             this.transform.forward = motionDirection;
             //this.transform.Rotate(new Vector3(0.0f, xSpeed * rSpeed, 0.0f));
             this.GetComponent<Rigidbody>().AddForce(this.transform.forward * speed);
-
         }
 
+        if (kbRight != 0.0f || kbForward != 0.0f)
+        {
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0.0f;
+            cameraForward.Normalize();
 
+            Vector3 cameraRight = Camera.main.transform.right;
+            cameraRight.y = 0.0f;
+            cameraRight.Normalize();
+
+            Vector3 motionDirection = kbRight * cameraRight + kbForward * cameraForward;
+            this.transform.forward = motionDirection;
+            //this.transform.Rotate(new Vector3(0.0f, xSpeed * rSpeed, 0.0f));
+            this.GetComponent<Rigidbody>().AddForce(this.transform.forward * speed);
+        }
     }
 
     // When collided with trigger object
@@ -329,37 +364,6 @@ public class PlayerScript : MonoBehaviour
     public void Dead()
     {
         SceneManager.LoadScene("lose");
-    }
-
-    void UpdateAnimations()
-    {
-        shiftKey = (GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) < 0.5f) ? false : true;
-        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
-
-        if (GamePad.GetButton(senseButton, GamePad.Index.One))
-        {
-            animator.SetBool("Idle", true);
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", false);
-        }
-        else if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
-        {
-            animator.SetBool("Idle", false);
-            animator.SetBool("Walk", true);
-            animator.SetBool("Run", false);
-        }
-        else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F))
-        {
-            animator.SetBool("Idle", false);
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", true);
-        }
-        else if (leftStick.x == 0.0F && leftStick.y == 0.0F)
-        {
-            animator.SetBool("Idle", true);
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", false);
-        }
     }
 
     /// <summary>

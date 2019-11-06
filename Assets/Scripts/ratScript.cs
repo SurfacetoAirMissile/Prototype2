@@ -8,6 +8,7 @@ public class ratScript : MonoBehaviour
     public enum ratStates
     {
         patrol,
+        curious,
         chase,
         dead,
         idle
@@ -34,6 +35,12 @@ public class ratScript : MonoBehaviour
     /// </summary>
     int targetNode = 0;
 
+    float timeSinceSawPlayer = 0.0f;
+    [SerializeField] float giveUpTime = 3.0f;
+
+    float timeSpottingPlayer = 0.0f;
+    [SerializeField] float spotChaseTime = 1.0f;
+
     void Awake()
     {
         body = GetComponent<Rigidbody>();
@@ -59,7 +66,7 @@ public class ratScript : MonoBehaviour
             case ratStates.patrol:
                 if (pathContainer != null)
                 {
-                    if (!MoveTowardsPosXZ(GetTargetNodePosition())) // if we're already at that point
+                    if (!SmoothMovementPosXZ(GetTargetNodePosition())) // if we're already at that point
                     {
                         // target the next node
                         targetNode++;
@@ -70,9 +77,45 @@ public class ratScript : MonoBehaviour
                         }
                     }
                 }
-                if (CanSeePlayer()) { currentState = ratStates.chase; }
+                else
+                {
+                    currentState = ratStates.idle;
+                }
+                if (CanSeePlayer()) { currentState = ratStates.curious; }
+                else {
+                    timeSpottingPlayer -= Time.deltaTime;
+                    if (timeSpottingPlayer < 0.0f) { timeSpottingPlayer = 0.0f; }
+                }
+                if (timeSpottingPlayer >= spotChaseTime) { currentState = ratStates.chase; }
+                break;
+            case ratStates.curious:
+                RotateTowardsPosXZ(GameObject.Find("Player").transform.position);
+                if (CanSeePlayer()) { timeSpottingPlayer += Time.deltaTime; }
+                else
+                {
+                    timeSpottingPlayer -= Time.deltaTime;
+                    if (timeSpottingPlayer < 0.0f)
+                    {
+                        timeSpottingPlayer = 0.0f;
+                        currentState = ratStates.patrol;
+                    }
+                }
+                if (timeSpottingPlayer >= spotChaseTime) { currentState = ratStates.chase; }
+                //if ()
                 break;
             case ratStates.chase:
+                if (CanSeePlayer())
+                {
+                    timeSinceSawPlayer = 0.0f;
+                }
+                else
+                {
+                    timeSinceSawPlayer += Time.deltaTime;
+                }
+                if (timeSinceSawPlayer >= giveUpTime)
+                {
+                    currentState = ratStates.patrol;
+                }
                 SmoothMovementPosXZ(GameObject.Find("Player").transform.position);
                 Vector3 distance = GameObject.Find("Player").transform.position - transform.position;
                 if (distance.magnitude > 5.0F) { currentState = ratStates.idle; }
@@ -175,7 +218,7 @@ public class ratScript : MonoBehaviour
             {
                 if (distance > 0.1F) // we aren't very close to the target
                 {
-                    body.AddForce(transform.forward * forceConstant * Time.deltaTime);
+                    body.AddForce(transform.forward * forceConstant * 2.0f * Time.deltaTime);
                 }
                 else // we are very close <3
                 {

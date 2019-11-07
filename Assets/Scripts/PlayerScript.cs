@@ -311,7 +311,7 @@ public class PlayerScript : MonoBehaviour
         // If colliding with cat
         if (collision.collider.tag == "Rat")
         {
-            if (collision.gameObject.GetComponent<ratScript>().currentState != ratScript.ratStates.dead)
+            if (collision.gameObject.GetComponent<RatNavScript>().currentState != RatNavScript.ratStates.dead)
             {
                 killedByRat = true;
                 Dead();

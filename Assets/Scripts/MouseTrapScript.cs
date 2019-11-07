@@ -32,7 +32,7 @@ public class MouseTrapScript : MonoBehaviour
                 // Collide with rat
                 snapSfx.Play();
 
-                collision.collider.GetComponent<ratScript>().Killed();
+                collision.collider.GetComponent<RatNavScript>().Killed();
 
                 TriggerTrap();
             }

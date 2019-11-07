@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CatScript : MonoBehaviour
 {
@@ -23,12 +24,16 @@ public class CatScript : MonoBehaviour
     /// <summary>
     /// Angle that it see the player in
     /// </summary>
-    const float viewAngle = 90.0f;
+    const float viewAngle = 135.0f;
 
     // Timer
     float timerMax = 5.0f; // In seconds
     float waitTimer = 0.0f;
-    
+
+    NavMeshAgent thisAgent;
+
+    Vector3 agentTarget;
+
     enum State
     {
         TURNING, // Is stationary and turning
@@ -41,8 +46,11 @@ public class CatScript : MonoBehaviour
     // Start function
     void Awake()
     {
+        thisAgent = GetComponent<NavMeshAgent>();
+
         // Set default follow point
         followPoint = pointA;
+        agentTarget = followPoint.transform.position;
 
         // Set waiting timer
         waitTimer = timerMax;
@@ -62,13 +70,13 @@ public class CatScript : MonoBehaviour
             case State.WALKING:
                 {
                     // Make sure cat is facing point
-                    transform.LookAt(followPoint.transform);
+                    //transform.LookAt(followPoint.transform);
 
                     // Update velocity
-                    velocity = followPoint.transform.position - this.transform.position;
+                    //velocity = followPoint.transform.position - this.transform.position;
 
                     // Move towards point
-                    this.GetComponent<Rigidbody>().AddForce(velocity.normalized * speed);
+                    //this.GetComponent<Rigidbody>().AddForce(velocity.normalized * speed);
 
                     // Check if colliding with point
                     if (this.GetComponent<Collider>().bounds.Intersects(followPoint.GetComponent<BoxCollider>().bounds))
@@ -77,11 +85,13 @@ public class CatScript : MonoBehaviour
                         SwapPoints();
 
                         // Update velocity
-                        velocity = followPoint.transform.position - this.transform.position;
+                        //velocity = followPoint.transform.position - this.transform.position;
 
                         // Enter turning state
                         catState = State.WAITING;
+                        thisAgent.isStopped = true;
                     }
+                    
 
                     break;
                 }
@@ -96,6 +106,8 @@ public class CatScript : MonoBehaviour
                     {
                         // Change state
                         catState = State.WALKING;
+                        thisAgent.isStopped = false;
+                        agentTarget = followPoint.transform.position;
                     }
 
                     break;
@@ -130,11 +142,11 @@ public class CatScript : MonoBehaviour
                     GameObject oPlayer = GameObject.Find("Player");
 
                     // Look at player
-                    transform.LookAt(oPlayer.transform);
+                    //transform.LookAt(oPlayer.transform);
 
                     // Chase player
-                    velocity = oPlayer.transform.position - this.transform.position;
-                    this.GetComponent<Rigidbody>().AddForce(velocity.normalized * speed);
+                    thisAgent.isStopped = false;
+                    agentTarget = oPlayer.transform.position;
                     
                     // Check if lost player
                     if (!CanSeePlayer())
@@ -148,6 +160,7 @@ public class CatScript : MonoBehaviour
             default:
                 break;
         }
+        thisAgent.SetDestination(agentTarget);
     }
 
     /// <summary>

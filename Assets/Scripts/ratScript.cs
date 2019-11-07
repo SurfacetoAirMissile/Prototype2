@@ -378,6 +378,7 @@ public class ratScript : MonoBehaviour
         if (distance > 0.1F) // we aren't very close to the target
         {
             body.AddForce(transform.forward * forceConstant * amount * Time.deltaTime);
+            //Debug.Log(amount);
         }
         else // we are very close <3
         {

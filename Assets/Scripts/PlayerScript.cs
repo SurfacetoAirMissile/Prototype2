@@ -16,6 +16,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] float xSpeed = 0.0f;
     [SerializeField] float zSpeed = 0.0f;
     [SerializeField] float drag = 2.0f;
+    [SerializeField] GameObject cheesePrefab;
 
     // Sounds
     [SerializeField] AudioSource munchSfx;
@@ -51,6 +52,10 @@ public class PlayerScript : MonoBehaviour
     /// Sprint Speed
     /// </summary>
     const float sSpeed = 25.0f;
+    /// <summary>
+    /// Speed while carrying cheese
+    /// </summary>
+    const float carrySpeed = 10.5f;
     // Rotation speeds
     /// <summary>
     /// Rotation Speed
@@ -111,6 +116,20 @@ public class PlayerScript : MonoBehaviour
                 animator.SetBool("Walk", false);
                 animator.SetBool("Run", false);
             }
+
+            // Drop cheese
+            if (GamePad.GetButton(dropButton, GamePad.Index.One) && cheeseHeld)
+            {
+                cheeseHeld = false;
+                Vector3 spawnPos = transform.position;
+                spawnPos.y += yBounds + 0.2f;
+                GameObject newCheese = Instantiate(cheesePrefab, spawnPos, Quaternion.identity);
+
+                // Throw forward
+                Vector3 force = new Vector3(0.0f, 100.0f, 0.0f);
+                force += transform.forward * 15.0f;
+                newCheese.GetComponent<Rigidbody>().AddForce(force);
+            }
         }
         // Sense is being held
         else
@@ -144,7 +163,14 @@ public class PlayerScript : MonoBehaviour
             Jump();
         }
 
-        speed = wSpeed;
+        if (cheeseHeld)
+        {
+            speed = carrySpeed;
+        }
+        else
+        {
+            speed = wSpeed;
+        }
 
         // Horiztonal movement
         MovementV3();
@@ -174,7 +200,14 @@ public class PlayerScript : MonoBehaviour
             Jump();
         }
 
-        speed = sSpeed;
+        if (cheeseHeld)
+        {
+            speed = carrySpeed;
+        }
+        else
+        {
+            speed = sSpeed;
+        }
 
         // Horiztonal movement
         MovementV3();

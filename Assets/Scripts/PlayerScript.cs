@@ -71,7 +71,7 @@ public class PlayerScript : MonoBehaviour
     /// </summary>
     bool shiftKey = false;
     GamePad.Button dropButton = GamePad.Button.B;
-    GamePad.Button senseButton = GamePad.Button.Y;
+    bool senseButton = false;
 
      void Awake()
     {
@@ -81,13 +81,14 @@ public class PlayerScript : MonoBehaviour
 
      void FixedUpdate()
     {
-        shiftKey = (GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) < 0.5f) ? false : true;
+        shiftKey = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) > 0.5f;
+        senseButton = GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One) > 0.5f;
         Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
 
         UpdateAnimations();
 
         // Only be able to move if sense is not being held
-        if (!GamePad.GetButton(senseButton, GamePad.Index.One))
+        if (!senseButton)
         {
             UpdateArrow(false);
 
@@ -366,10 +367,10 @@ public class PlayerScript : MonoBehaviour
 
     void UpdateAnimations()
     {
-        shiftKey = (GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) < 0.5f) ? false : true;
+        shiftKey = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) > 0.5f;
         Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
 
-        if (GamePad.GetButton(senseButton, GamePad.Index.One))
+        if (senseButton)
         {
             animator.SetBool("Idle", true);
             animator.SetBool("Walk", false);

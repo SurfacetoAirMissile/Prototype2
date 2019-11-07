@@ -4,31 +4,26 @@ using UnityEngine;
 
 public class SoundSystem : MonoBehaviour
 {
-    public bool playMusic;
-    public bool playEffects;
-    public bool playHeartbeat;
-
-    public float maxEnemyDist = 5.0f;
-    [SerializeField] private float enemyDangerZone = 2.0f;
-
-    [SerializeField] private Transform player;
-    [SerializeField] private GameObject enemy;
-
-    [SerializeField] private float timer = 0.0f;
-
-    [SerializeField] private AudioSource basicAudio;
-    [SerializeField] private AudioSource dangerAudio;
-    [SerializeField] private AudioSource munchAudio;
-    [SerializeField] private AudioSource snapAudio;
-    [SerializeField] private AudioSource heartAudio;
-
-    public bool danger = false;
-
-    private float enDist = 0.0f;
-    [SerializeField] private float heartMultiply = 0.0f;
+    // Audio
+    [SerializeField] AudioSource basicAudio;
+    [SerializeField] AudioSource dangerAudio;
+    [SerializeField] AudioSource munchAudio;
+    [SerializeField] AudioSource snapAudio;
+    [SerializeField] AudioSource heartAudio;
+    
+    float enDist = 0.0f;
+    /// <summary>
+    /// Maximum distance enemy rat can be away from player before losing danger music
+    /// </summary>
+    const float maxEnemyDist = 5.0f;
+    float enemyDangerZone = 2.0f;
+    GameObject enemy;
+    float timer = 0.0f;
+    bool danger = false;
+    float heartMultiply = 0.0f;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         basicAudio.volume = 1;
         dangerAudio.volume = 0;
@@ -40,139 +35,150 @@ public class SoundSystem : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (playMusic)
+        BackgroundMusic();
+
+        //RandomSoundEffects();
+
+        // Play heart beat
+        if (!heartAudio.isPlaying)
         {
-            if (danger)
-            {
-                if (!dangerAudio.isPlaying)
-                {
-                    dangerAudio.Play(0);
-                }
-
-                if (dangerAudio.volume < 1)
-                {
-                    basicAudio.volume -= 0.5f * Time.deltaTime;
-                    dangerAudio.volume += 0.5f * Time.deltaTime;
-                }
-                else
-                {
-                    basicAudio.Pause();
-                }
-            }
-            else
-            {
-                if (dangerAudio.volume > 0)
-                {
-                    dangerAudio.volume -= 0.5f * Time.deltaTime;
-                }
-                else
-                {
-                    if (basicAudio.volume < 1)
-                    {
-                        basicAudio.volume += 1f * Time.deltaTime;
-                        dangerAudio.Stop();
-
-                        if (!basicAudio.isPlaying)
-                        {
-                            basicAudio.Play(0);
-                        }
-                    }
-
-                }
-            }
+            heartAudio.Play(0);
         }
 
-
-        if (playEffects)
+        // If there is no enemy close, play heartbeat normally
+        if (enemy == null)
         {
-            if (timer <= 0)
-            {
-                int soundChoice = (Random.Range(0, 2));
-
-                if (soundChoice == 0)
-                {
-                    if (!munchAudio.isPlaying)
-                    {
-                        munchAudio.panStereo = Random.Range(-1.5f, 1.5f);
-                        munchAudio.Play(0);
-                        Debug.Log("munch");
-                    }
-                }
-                else
-                {
-                    if (!snapAudio.isPlaying)
-                    {
-                        snapAudio.panStereo = Random.Range(-1.5f, 1.5f);
-                        snapAudio.Play(0);
-                        Debug.Log("snap");
-                    }
-                }
-
-                timer = Random.Range(1.0f, 30.0f);
-            }
-            else
-            {
-                if (!danger)
-                {
-                    timer -= Time.deltaTime;
-                }
-            }
+            heartAudio.pitch = 1.0f;
         }
-
-        if (playHeartbeat)
-        {
-            if (!heartAudio.isPlaying)
-            {
-                heartAudio.Play(0);
-            }
-
-            if (enemy == null)
-            {
-                heartAudio.pitch = 1.0f;
-            }
-            else
-            {
-                heartMultiply = (1/enDist) * 2;
-                heartMultiply = Mathf.Clamp(heartMultiply, 0.0f, 1.5f);
-                
-
-                heartAudio.pitch = 1.0f + heartMultiply;
-            }
-        }
-
-        if (enemy != null && enDist < enemyDangerZone)
-        {
-            danger = true;
-        }
+        // If there is an enemy close by, change pitch depending on how close they are
         else
         {
-            danger = false;
+            heartMultiply = (1/enDist) * 2;
+            heartMultiply = Mathf.Clamp(heartMultiply, 0.0f, 1.5f);
+                
+
+            heartAudio.pitch = 1.0f + heartMultiply;
         }
+
+        // Check distance
+        danger = (enemy != null && enDist < enemyDangerZone);
 
         CheckCloseDistance();
     }
 
     void CheckCloseDistance()
     {
+        // Get all rats
         GameObject[] taggedObjects = GameObject.FindGameObjectsWithTag("Rat");
 
         float closeDist = Mathf.Infinity;
 
+        // Find the closest rat
         for (int i = 0; i < taggedObjects.Length; i++)
         {
-            if (Vector3.Distance(player.position, taggedObjects[i].transform.position) <= closeDist)
+            if (Vector3.Distance(transform.position, taggedObjects[i].transform.position) <= closeDist)
             {
-                closeDist = Vector3.Distance(player.position, taggedObjects[i].transform.position);
+                closeDist = Vector3.Distance(transform.position, taggedObjects[i].transform.position);
                 enemy = taggedObjects[i];
                 enDist = closeDist;
             }
         }
 
+        // If the closest rat is out of range
         if (closeDist > maxEnemyDist)
         {
             enemy = null;
+        }
+    }
+
+    /// <summary>
+    /// Manages background music
+    /// </summary>
+    void BackgroundMusic()
+    {
+        // Danger
+        if (danger)
+        {
+            // Play if not currently playing
+            if (!dangerAudio.isPlaying)
+            {
+                dangerAudio.Play();
+            }
+
+            // Crossfade into danger music
+            if (dangerAudio.volume < 1)
+            {
+                basicAudio.volume -= 0.5f * Time.fixedDeltaTime;
+                dangerAudio.volume += 0.5f * Time.fixedDeltaTime;
+            }
+            else
+            {
+                basicAudio.Pause();
+            }
+        }
+        // Not in danger
+        else
+        {
+            // Lower danger volume
+            if (dangerAudio.volume > 0)
+            {
+                dangerAudio.volume -= 0.5f * Time.deltaTime;
+            }
+            else
+            {
+                // Increase normal music
+                if (basicAudio.volume < 1)
+                {
+                    basicAudio.volume += 1.0f * Time.deltaTime;
+                    dangerAudio.Stop();
+
+                    if (!basicAudio.isPlaying)
+                    {
+                        basicAudio.Play(0);
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Tick the timer and play random sound effects for ambient noise
+    /// </summary>
+    void RandomSoundEffects()
+    {
+        // Timer ticked
+        if (timer <= 0)
+        {
+            int soundChoice = (Random.Range(0, 2));
+
+            if (soundChoice == 0)
+            {
+                if (!munchAudio.isPlaying)
+                {
+                    munchAudio.panStereo = Random.Range(-1.5f, 1.5f);
+                    munchAudio.Play(0);
+                }
+            }
+            else
+            {
+                if (!snapAudio.isPlaying)
+                {
+                    snapAudio.panStereo = Random.Range(-1.5f, 1.5f);
+                    snapAudio.Play(0);
+                }
+            }
+
+            timer = Random.Range(1.0f, 30.0f);
+        }
+        else
+        {
+            // Tick timer if not in danger
+            if (!danger)
+            {
+                timer -= Time.deltaTime;
+            }
         }
     }
 }

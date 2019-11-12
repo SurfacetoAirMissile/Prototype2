@@ -124,7 +124,6 @@ Transform:
   m_Children:
   - {fileID: 7932453306240561492}
   - {fileID: 5006512735848475359}
-  - {fileID: 3835006648065522462}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

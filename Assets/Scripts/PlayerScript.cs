@@ -11,7 +11,6 @@ public class PlayerScript : MonoBehaviour
     // Serialised
     [SerializeField] GameObject animatorChild;
     [SerializeField] Animator animator;
-    [SerializeField] PlayerAnimatorScript animationScript;
     [SerializeField] GameObject arrow;
     [SerializeField] float xSpeed = 0.0f;
     [SerializeField] float zSpeed = 0.0f;
@@ -73,13 +72,12 @@ public class PlayerScript : MonoBehaviour
     GamePad.Button dropButton = GamePad.Button.B;
     bool senseButton = false;
 
-     void Awake()
+    void Awake()
     {
         animator = animatorChild.GetComponent<Animator>();
-        animationScript = animatorChild.GetComponent<PlayerAnimatorScript>();
     }
 
-     void FixedUpdate()
+    void FixedUpdate()
     {
         shiftKey = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) > 0.5f;
         senseButton = GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One) > 0.5f;
@@ -87,7 +85,7 @@ public class PlayerScript : MonoBehaviour
         Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
         float kbForward = Input.GetAxis("kbForward");
         float kbRight = Input.GetAxis("kbRight");
-        
+
         // Only be able to move if sense is not being held
         if (!senseButton)
         {
@@ -147,7 +145,7 @@ public class PlayerScript : MonoBehaviour
     /// <summary>
     /// Moves the player
     /// </summary>
-     void WalkUpdate()
+    void WalkUpdate()
     {
         // Manual Drag (X and Z axis)
         Vector3 vel = this.GetComponent<Rigidbody>().velocity;
@@ -180,7 +178,7 @@ public class PlayerScript : MonoBehaviour
     /// <summary>
     /// Moves the player when sprinting
     /// </summary>
-     void RunUpdate()
+    void RunUpdate()
     {
         // Manual Drag (X and Z axis)
         Vector3 vel = this.GetComponent<Rigidbody>().velocity;
@@ -217,7 +215,7 @@ public class PlayerScript : MonoBehaviour
     /// <summary>
     /// Makes the player jump
     /// </summary>
-     void Jump()
+    void Jump()
     {
         // If touching the ground
         if (Physics.Raycast(this.transform.position, -Vector3.up, yBounds))
@@ -226,34 +224,7 @@ public class PlayerScript : MonoBehaviour
             this.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce);
         }
     }
-
-    // 'classic' tank controls
-    /// <summary>
-    /// Checks for input for movement
-    /// </summary>
-     void MovementV2()
-    {
-        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
-        Vector2 rightStick = GamePad.GetAxis(GamePad.Axis.RightStick, GamePad.Index.One);
-        xSpeed = leftStick.x;
-        zSpeed = leftStick.y;
-
-        this.transform.Rotate(new Vector3(0.0f, xSpeed * rSpeed, 0.0f));
-
-        this.GetComponent<Rigidbody>().AddForce(this.transform.forward * zSpeed * speed);
-    }
-    // WASD controls (W is back wall)
-    void MovementV1()
-    {
-        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
-
-        Vector3 movement = new Vector3(leftStick.x, 0.0f, leftStick.y);
-
-        if (leftStick.x != 0.0f || leftStick.y != 0.0f)
-        {
-            this.GetComponent<Rigidbody>().AddForce(movement * speed);
-        }
-    }
+    
     // Racing controls
     void MovementV3()
     {
@@ -284,7 +255,7 @@ public class PlayerScript : MonoBehaviour
             Vector3 cameraRight = Camera.main.transform.right;
             cameraRight.y = 0.0f;
             cameraRight.Normalize();
-            
+
             Vector3 motionDirection = leftStick.x * cameraRight + leftStick.y * cameraForward;
             this.transform.forward = motionDirection;
             //this.transform.Rotate(new Vector3(0.0f, xSpeed * rSpeed, 0.0f));
@@ -334,7 +305,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     // When collided with collider
-     void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
         // If colliding with cat
         if (collision.collider.tag == "cat")
@@ -353,7 +324,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-     void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
         if (other.tag == "CameraZone")
         {
@@ -379,7 +350,7 @@ public class PlayerScript : MonoBehaviour
     /// <summary>
     /// Checks if the player has won
     /// </summary>
-     void CheckWin()
+    void CheckWin()
     {
         // If had more than a certain amount of food
         if (cheeseHeld)
@@ -398,42 +369,5 @@ public class PlayerScript : MonoBehaviour
     public void Dead()
     {
         SceneManager.LoadScene("lose");
-    }
-
-    /// <summary>
-    /// Transitions out of animation
-    /// </summary>
-    public void TransOut()
-    {
-        //bool shiftKey = Input.GetKey(KeyCode.LeftShift);
-        //float verticalAxis = Input.GetAxisRaw("Vertical");
-        //float horizontalAxis = Input.GetAxisRaw("Horizontal");
-        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
-        float triggers = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One);
-        triggers -= GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One);
-
-        if (shiftKey && (leftStick.x != 0.0F || triggers != 0.0F))
-        {
-            // running
-            //currentState = playerStates.transInRun;
-            animator.SetTrigger("TriggerStartRun");
-            //isAnimationTriggered = true;
-            return;
-        }
-        if (leftStick.x != 0.0F || triggers != 0.0F)
-        {
-            // walking
-            currentState = playerStates.walk;
-            animator.SetTrigger("TriggerWalk");
-            //isAnimationTriggered = true;
-            return;
-        }
-        if (leftStick.x == 0.0F && triggers == 0.0F)
-        {
-            //currentState = playerStates.transInIdle;
-            animator.SetTrigger("TriggerStartIdle");
-            //isAnimationTriggered = true;
-            return;
-        }
     }
 }

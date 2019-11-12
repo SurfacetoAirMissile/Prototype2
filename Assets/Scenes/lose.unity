@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a134bf61b4d9040b7233a64d86aff6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: 2
+  button: 3
 --- !u!64 &638551277
 MeshCollider:
   m_ObjectHideFlags: 0

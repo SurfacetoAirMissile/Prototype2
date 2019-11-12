@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class AudioHandler : MonoBehaviour
 {
     // Public variables
-    [SerializeField] AudioSource spottedDeath;
+    [SerializeField] AudioSource catDeath;
 
     void Awake()
     {
@@ -19,6 +19,6 @@ public class AudioHandler : MonoBehaviour
     /// </summary>
     public void PlayCatDeath()
     {
-        spottedDeath.Play();
+        catDeath.Play();
     }
 }

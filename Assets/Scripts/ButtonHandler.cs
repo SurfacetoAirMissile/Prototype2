@@ -6,14 +6,22 @@ using UnityEngine.SceneManagement;
 
 public class ButtonHandler : MonoBehaviour
 {
+    GlobalScript global;
+
     public enum ButtonType
     {
         PLAY,
         CLOSE,
-        RETURN
+        RETURNWIN,
+        RETURNLOSE
     }
 
     public ButtonType button;
+
+    private void Awake()
+    {
+        global = GameObject.Find("GlobalObj").GetComponent<GlobalScript>();
+    }
 
     private void OnMouseDown()
     {
@@ -33,7 +41,46 @@ public class ButtonHandler : MonoBehaviour
                     break;
                 }
 
-            case ButtonType.RETURN:
+            case ButtonType.RETURNWIN:
+                {
+                    // Check night and load level accordingly
+                    switch (global.GetNight())
+                    {
+                        case 1:
+                            {
+                                // Load level 2
+
+                                break;
+                            }
+                        case 2:
+                            {
+                                // Load level 3
+
+                                break;
+                            }
+                        case 3:
+                            {
+                                // Load level 4
+
+                                break;
+                            }
+                        case 4:
+                            {
+                                global.ResetNight();
+                                SceneManager.LoadScene("menu");
+                                break;
+                            }
+                        default:
+                            {
+                                global.IncrementNight();
+                                break;
+                            }
+                    }
+
+                    break;
+                }
+
+            case ButtonType.RETURNLOSE:
                 {
                     SceneManager.LoadScene("menu");
 

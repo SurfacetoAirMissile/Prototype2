@@ -29,7 +29,7 @@ public class ButtonHandler : MonoBehaviour
         {
             case ButtonType.PLAY:
                 {
-                    SceneManager.LoadScene("Level Design 1");
+                    SceneManager.LoadScene("Level 1");
 
                     break;
                 }
@@ -48,19 +48,19 @@ public class ButtonHandler : MonoBehaviour
                     {
                         case 1:
                             {
-                                // Load level 2
+                                SceneManager.LoadScene("Level 2");
 
                                 break;
                             }
                         case 2:
                             {
-                                // Load level 3
+                                SceneManager.LoadScene("Level 3");
 
                                 break;
                             }
                         case 3:
                             {
-                                // Load level 4
+                                SceneManager.LoadScene("Level 4");
 
                                 break;
                             }

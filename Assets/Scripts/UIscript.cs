@@ -9,21 +9,22 @@ public class UIscript : MonoBehaviour
     // Serialized
     [SerializeField] Sprite[] sprites;
 
-    /// <summary>
-    /// Updates the HUD
-    /// </summary>
-    /// <param name="newFoodNum"></param>
-    public void UpdateSprites(uint newFoodNum)
+    PlayerScript player;
+
+    private void Awake()
     {
-        // Less than full
-        if (newFoodNum <= 18)
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+    }
+
+    private void FixedUpdate()
+    {
+        if (player.cheeseHeld)
         {
-            // Change sprite
-            this.GetComponent<Image>().sprite = sprites[newFoodNum];
+            this.GetComponent<Image>().sprite = sprites[18];
         }
         else
         {
-            this.GetComponent<Image>().sprite = sprites[18];
+            this.GetComponent<Image>().sprite = sprites[0];
         }
     }
 }

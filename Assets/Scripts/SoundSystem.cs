@@ -39,7 +39,7 @@ public class SoundSystem : MonoBehaviour
     {
         BackgroundMusic();
 
-        //RandomSoundEffects();
+        RandomSoundEffects();
 
         // Play heart beat
         if (!heartAudio.isPlaying)
@@ -63,9 +63,26 @@ public class SoundSystem : MonoBehaviour
         }
 
         // Check distance
-        danger = (enemy != null && enDist < enemyDangerZone);
+        danger = BeingChased();
+        //danger = (enemy != null && enDist < enemyDangerZone);
 
         CheckCloseDistance();
+    }
+
+    bool BeingChased()
+    {
+        // Get all rats
+        GameObject[] taggedObjects = GameObject.FindGameObjectsWithTag("Rat");
+        
+        // Find the closest rat
+        for (int i = 0; i < taggedObjects.Length; i++)
+        {
+            if (taggedObjects[i].GetComponent<RatNavScript>().currentState == RatNavScript.ratStates.chase)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     void CheckCloseDistance()

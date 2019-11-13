@@ -16,6 +16,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] float zSpeed = 0.0f;
     [SerializeField] float drag = 2.0f;
     [SerializeField] GameObject cheesePrefab;
+    [SerializeField] GameObject heldCheeseObject;
 
     // Sounds
     [SerializeField] AudioSource munchSfx;
@@ -149,6 +150,7 @@ public class PlayerScript : MonoBehaviour
                 Vector3 spawnPos = transform.position;
                 spawnPos.y += yBounds + 0.2f;
                 GameObject newCheese = Instantiate(cheesePrefab, spawnPos, Quaternion.identity);
+                heldCheeseObject.GetComponent<MeshRenderer>().enabled = false;
 
                 // Throw forward
                 Vector3 force = new Vector3(0.0f, 100.0f, 0.0f);
@@ -319,12 +321,7 @@ public class PlayerScript : MonoBehaviour
             // Destroy collectable
             Destroy(other.gameObject);
             cheeseHeld = true;
-        }
-
-        if (other.tag == "CameraZone")
-        {
-            //GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
-            //camera.GetComponent<CameraScript>().UpdatePlayerPosition(other.gameObject.GetComponent<BoxCollider>(), true);
+            heldCheeseObject.GetComponent<MeshRenderer>().enabled = true;
         }
 
         // When player reaches home

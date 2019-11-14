@@ -12,6 +12,7 @@ TagManager:
   - Bread
   - CameraZone
   - cat
+  - UIObject
   layers:
   - Default
   - TransparentFX

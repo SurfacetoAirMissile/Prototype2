@@ -16,6 +16,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] float zSpeed = 0.0f;
     [SerializeField] float drag = 2.0f;
     [SerializeField] GameObject cheesePrefab;
+    [SerializeField] GameObject heldCheeseObject;
 
     // Sounds
     [SerializeField] AudioSource munchSfx;
@@ -63,6 +64,18 @@ public class PlayerScript : MonoBehaviour
     // Jump Heights
     float jumpForce = 50.0f;
 
+    MenuController UIcontrol;
+
+    enum Animations
+    {
+        RUN,
+        WALK,
+        IDLE,
+        SENSE,
+        CHEESEIDLE,
+        CHEESEWALK
+    }
+
     // Buttons
     GamePad.Button jumpButton = GamePad.Button.A;
     /// <summary>
@@ -75,71 +88,101 @@ public class PlayerScript : MonoBehaviour
     void Awake()
     {
         animator = animatorChild.GetComponent<Animator>();
+        UIcontrol = GameObject.FindGameObjectWithTag("UIObject").GetComponent<MenuController>();
     }
 
     void FixedUpdate()
     {
-        shiftKey = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) > 0.5f;
-        senseButton = GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One) > 0.5f;
-        if (!shiftKey) { shiftKey = Input.GetKey("left shift"); }
-        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
-        float kbForward = Input.GetAxis("kbForward");
-        float kbRight = Input.GetAxis("kbRight");
-
-        // Only be able to move if sense is not being held
-        if (!senseButton)
+        if (UIcontrol.currentMenu == MenuController.MenuMode.NONE)
         {
-            UpdateArrow(false);
+            shiftKey = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) > 0.5f;
+            senseButton = GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One) > 0.5f;
+            if (!shiftKey) { shiftKey = Input.GetKey("left shift"); }
+            Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+            float kbForward = Input.GetAxis("kbForward");
+            float kbRight = Input.GetAxis("kbRight");
 
-            if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
+            // Only be able to move if sense is not being held
+            if (!senseButton)
             {
-                WalkUpdate();
-                // Set animation
-                animator.SetBool("Idle", false);
-                animator.SetBool("Walk", true);
-                animator.SetBool("Run", false);
-            }
-            else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
-            {
-                RunUpdate();
-                // Set animation
-                animator.SetBool("Idle", false);
-                animator.SetBool("Walk", false);
-                animator.SetBool("Run", true);
-            }
-            else if (leftStick.x == 0.0F && leftStick.y == 0.0F && kbForward == 0.0f && kbRight == 0.0f)
-            {
-                WalkUpdate();
-                // Set animation
-                animator.SetBool("Idle", true);
-                animator.SetBool("Walk", false);
-                animator.SetBool("Run", false);
-            }
+                UpdateArrow(false);
 
-            // Drop cheese
-            if (GamePad.GetButton(dropButton, GamePad.Index.One) && cheeseHeld)
-            {
-                cheeseHeld = false;
-                Vector3 spawnPos = transform.position;
-                spawnPos.y += yBounds + 0.2f;
-                GameObject newCheese = Instantiate(cheesePrefab, spawnPos, Quaternion.identity);
+                if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
+                {
+                    WalkUpdate();
+                    if (!cheeseHeld)
+                    {
+                        // Set animation
+                        ChangeAnimation(Animations.WALK);
+                    }
+                    else
+                    {
+                        // Cheese held
+                        ChangeAnimation(Animations.CHEESEWALK);
+                    }
+                }
+                else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
+                {
+                    RunUpdate();
+                    if (!cheeseHeld)
+                    {
+                        // Set animation
+                        ChangeAnimation(Animations.RUN);
+                    }
+                    else
+                    {
+                        ChangeAnimation(Animations.CHEESEWALK);
+                    }
+                }
+                else if (leftStick.x == 0.0F && leftStick.y == 0.0F && kbForward == 0.0f && kbRight == 0.0f)
+                {
+                    WalkUpdate();
+                    if (!cheeseHeld)
+                    {
+                        // Set animation
+                        ChangeAnimation(Animations.IDLE);
+                    }
+                    else
+                    {
+                        ChangeAnimation(Animations.CHEESEIDLE);
+                    }
+                }
 
-                // Throw forward
-                Vector3 force = new Vector3(0.0f, 100.0f, 0.0f);
-                force += transform.forward * 15.0f;
-                newCheese.GetComponent<Rigidbody>().AddForce(force);
+                // Drop cheese
+                if (GamePad.GetButton(dropButton, GamePad.Index.One) && cheeseHeld)
+                {
+                    cheeseHeld = false;
+                    Vector3 spawnPos = transform.position;
+                    spawnPos.y += yBounds + 0.2f;
+                    GameObject newCheese = Instantiate(cheesePrefab, spawnPos, Quaternion.identity);
+                    heldCheeseObject.GetComponent<MeshRenderer>().enabled = false;
+
+                    // Throw forward
+                    Vector3 force = new Vector3(0.0f, 100.0f, 0.0f);
+                    force += transform.forward * 15.0f;
+                    newCheese.GetComponent<Rigidbody>().AddForce(force);
+                }
+            }
+            // Sense is being held
+            else
+            {
+                UpdateArrow(true);
+                if (!cheeseHeld)
+                {
+                    // Set animation
+                    ChangeAnimation(Animations.SENSE);
+                }
+                else
+                {
+                    ChangeAnimation(Animations.CHEESEIDLE);
+                }
             }
         }
-        // Sense is being held
         else
         {
-            UpdateArrow(true);
-            // Set animation
-            animator.SetBool("Idle", true);
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", false);
+            if (cheeseHeld) { ChangeAnimation(Animations.CHEESEIDLE); }
+            else { ChangeAnimation(Animations.IDLE); }
         }
-
     }
 
     /// <summary>
@@ -235,17 +278,6 @@ public class PlayerScript : MonoBehaviour
         float kbForward = Input.GetAxis("kbForward");
         float kbRight = Input.GetAxis("kbRight");
 
-        //zSpeed = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One);
-        //zSpeed -= GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One);
-        //xSpeed = leftStick.x;
-
-        /*
-        if (GamePad.GetButton(GamePad.Button.RightStick, GamePad.Index.One))
-        {
-            Camera.main.GetComponent<CinemachineFreeLook>().m_YAxis = ;
-        }
-        */
-
         if (leftStick.x != 0.0f || leftStick.y != 0.0f)
         {
             Vector3 cameraForward = Camera.main.transform.forward;
@@ -288,12 +320,7 @@ public class PlayerScript : MonoBehaviour
             // Destroy collectable
             Destroy(other.gameObject);
             cheeseHeld = true;
-        }
-
-        if (other.tag == "CameraZone")
-        {
-            //GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
-            //camera.GetComponent<CameraScript>().UpdatePlayerPosition(other.gameObject.GetComponent<BoxCollider>(), true);
+            heldCheeseObject.GetComponent<MeshRenderer>().enabled = true;
         }
 
         // When player reaches home
@@ -355,11 +382,11 @@ public class PlayerScript : MonoBehaviour
         // If had more than a certain amount of food
         if (cheeseHeld)
         {
-            SceneManager.LoadScene("win");
+            UIcontrol.ChangeMenuMode(MenuController.MenuMode.WINSCREEN);
         }
         else
         {
-            Dead();
+            UIcontrol.ChangeMenuMode(MenuController.MenuMode.LOSESCREEN);
         }
     }
 
@@ -369,5 +396,75 @@ public class PlayerScript : MonoBehaviour
     public void Dead()
     {
         SceneManager.LoadScene("lose");
+    }
+
+    void ChangeAnimation(Animations i)
+    {
+        switch(i)
+        {
+            case Animations.IDLE:
+                {
+                    animator.SetBool("Idle", true);
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Run", false);
+                    animator.SetBool("Sense", false);
+                    animator.SetBool("CheeseWalk", false);
+                    animator.SetBool("CheeseIdle", false);
+                    break;
+                }
+            case Animations.WALK:
+                {
+                    animator.SetBool("Idle", false);
+                    animator.SetBool("Walk", true);
+                    animator.SetBool("Run", false);
+                    animator.SetBool("Sense", false);
+                    animator.SetBool("CheeseWalk", false);
+                    animator.SetBool("CheeseIdle", false);
+                    break;
+                }
+            case Animations.RUN:
+                {
+                    animator.SetBool("Idle", false);
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Run", true);
+                    animator.SetBool("Sense", false);
+                    animator.SetBool("CheeseWalk", false);
+                    animator.SetBool("CheeseIdle", false);
+                    break;
+                }
+            case Animations.SENSE:
+                {
+                    animator.SetBool("Idle", false);
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Run", false);
+                    animator.SetBool("Sense", true);
+                    animator.SetBool("CheeseWalk", false);
+                    animator.SetBool("CheeseIdle", false);
+                    break;
+                }
+            case Animations.CHEESEWALK:
+                {
+                    animator.SetBool("Idle", false);
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Run", false);
+                    animator.SetBool("Sense", false);
+                    animator.SetBool("CheeseWalk", true);
+                    animator.SetBool("CheeseIdle", false);
+                    break;
+                }
+            case Animations.CHEESEIDLE:
+                {
+                    animator.SetBool("Idle", false);
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Run", false);
+                    animator.SetBool("Sense", false);
+                    animator.SetBool("CheeseWalk", false);
+                    animator.SetBool("CheeseIdle", true);
+                    break;
+                }
+
+            default:
+                break;
+        }
     }
 }

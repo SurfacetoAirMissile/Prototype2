@@ -750,6 +750,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cone
       objectReference: {fileID: 0}
+    - target: {fileID: 8325421813608303731, guid: c50d5da952419014f8ca1cc8824c621d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c50d5da952419014f8ca1cc8824c621d, type: 3}
 --- !u!1 &3006572758220842999 stripped
@@ -2131,6 +2136,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2921868318661057737, guid: 2858495a4b546814aaeb67018a061a7c,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 2921868318661057741, guid: 2858495a4b546814aaeb67018a061a7c,
         type: 3}

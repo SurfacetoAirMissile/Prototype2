@@ -64,6 +64,8 @@ public class PlayerScript : MonoBehaviour
     // Jump Heights
     float jumpForce = 50.0f;
 
+    MenuController UIcontrol;
+
     enum Animations
     {
         RUN,
@@ -86,93 +88,101 @@ public class PlayerScript : MonoBehaviour
     void Awake()
     {
         animator = animatorChild.GetComponent<Animator>();
+        UIcontrol = GameObject.FindGameObjectWithTag("UIObject").GetComponent<MenuController>();
     }
 
     void FixedUpdate()
     {
-        shiftKey = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) > 0.5f;
-        senseButton = GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One) > 0.5f;
-        if (!shiftKey) { shiftKey = Input.GetKey("left shift"); }
-        Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
-        float kbForward = Input.GetAxis("kbForward");
-        float kbRight = Input.GetAxis("kbRight");
-
-        // Only be able to move if sense is not being held
-        if (!senseButton)
+        if (UIcontrol.currentMenu == MenuController.MenuMode.NONE)
         {
-            UpdateArrow(false);
+            shiftKey = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One) > 0.5f;
+            senseButton = GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One) > 0.5f;
+            if (!shiftKey) { shiftKey = Input.GetKey("left shift"); }
+            Vector2 leftStick = GamePad.GetAxis(GamePad.Axis.LeftStick, GamePad.Index.One);
+            float kbForward = Input.GetAxis("kbForward");
+            float kbRight = Input.GetAxis("kbRight");
 
-            if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
+            // Only be able to move if sense is not being held
+            if (!senseButton)
             {
-                WalkUpdate();
-                if (!cheeseHeld)
+                UpdateArrow(false);
+
+                if (!shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
                 {
-                    // Set animation
-                    ChangeAnimation(Animations.WALK);
+                    WalkUpdate();
+                    if (!cheeseHeld)
+                    {
+                        // Set animation
+                        ChangeAnimation(Animations.WALK);
+                    }
+                    else
+                    {
+                        // Cheese held
+                        ChangeAnimation(Animations.CHEESEWALK);
+                    }
                 }
-                else
+                else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
                 {
-                    // Cheese held
-                    ChangeAnimation(Animations.CHEESEWALK);
+                    RunUpdate();
+                    if (!cheeseHeld)
+                    {
+                        // Set animation
+                        ChangeAnimation(Animations.RUN);
+                    }
+                    else
+                    {
+                        ChangeAnimation(Animations.CHEESEWALK);
+                    }
+                }
+                else if (leftStick.x == 0.0F && leftStick.y == 0.0F && kbForward == 0.0f && kbRight == 0.0f)
+                {
+                    WalkUpdate();
+                    if (!cheeseHeld)
+                    {
+                        // Set animation
+                        ChangeAnimation(Animations.IDLE);
+                    }
+                    else
+                    {
+                        ChangeAnimation(Animations.CHEESEIDLE);
+                    }
+                }
+
+                // Drop cheese
+                if (GamePad.GetButton(dropButton, GamePad.Index.One) && cheeseHeld)
+                {
+                    cheeseHeld = false;
+                    Vector3 spawnPos = transform.position;
+                    spawnPos.y += yBounds + 0.2f;
+                    GameObject newCheese = Instantiate(cheesePrefab, spawnPos, Quaternion.identity);
+                    heldCheeseObject.GetComponent<MeshRenderer>().enabled = false;
+
+                    // Throw forward
+                    Vector3 force = new Vector3(0.0f, 100.0f, 0.0f);
+                    force += transform.forward * 15.0f;
+                    newCheese.GetComponent<Rigidbody>().AddForce(force);
                 }
             }
-            else if (shiftKey && (leftStick.x != 0.0F || leftStick.y != 0.0F || kbForward != 0.0f || kbRight != 0.0f))
+            // Sense is being held
+            else
             {
-                RunUpdate();
+                UpdateArrow(true);
                 if (!cheeseHeld)
                 {
                     // Set animation
-                    ChangeAnimation(Animations.RUN);
-                }
-                else
-                {
-                    ChangeAnimation(Animations.CHEESEWALK);
-                }
-            }
-            else if (leftStick.x == 0.0F && leftStick.y == 0.0F && kbForward == 0.0f && kbRight == 0.0f)
-            {
-                WalkUpdate();
-                if (!cheeseHeld)
-                {
-                    // Set animation
-                    ChangeAnimation(Animations.IDLE);
+                    ChangeAnimation(Animations.SENSE);
                 }
                 else
                 {
                     ChangeAnimation(Animations.CHEESEIDLE);
                 }
             }
-
-            // Drop cheese
-            if (GamePad.GetButton(dropButton, GamePad.Index.One) && cheeseHeld)
-            {
-                cheeseHeld = false;
-                Vector3 spawnPos = transform.position;
-                spawnPos.y += yBounds + 0.2f;
-                GameObject newCheese = Instantiate(cheesePrefab, spawnPos, Quaternion.identity);
-                heldCheeseObject.GetComponent<MeshRenderer>().enabled = false;
-
-                // Throw forward
-                Vector3 force = new Vector3(0.0f, 100.0f, 0.0f);
-                force += transform.forward * 15.0f;
-                newCheese.GetComponent<Rigidbody>().AddForce(force);
-            }
         }
-        // Sense is being held
         else
         {
-            UpdateArrow(true);
-            if (!cheeseHeld)
-            {
-                // Set animation
-                ChangeAnimation(Animations.SENSE);
-            }
-            else
-            {
-                ChangeAnimation(Animations.CHEESEIDLE);
-            }
+            if (cheeseHeld) { ChangeAnimation(Animations.CHEESEIDLE); }
+            else { ChangeAnimation(Animations.IDLE); }
         }
-
     }
 
     /// <summary>
@@ -267,17 +277,6 @@ public class PlayerScript : MonoBehaviour
 
         float kbForward = Input.GetAxis("kbForward");
         float kbRight = Input.GetAxis("kbRight");
-
-        //zSpeed = GamePad.GetTrigger(GamePad.Trigger.RightTrigger, GamePad.Index.One);
-        //zSpeed -= GamePad.GetTrigger(GamePad.Trigger.LeftTrigger, GamePad.Index.One);
-        //xSpeed = leftStick.x;
-
-        /*
-        if (GamePad.GetButton(GamePad.Button.RightStick, GamePad.Index.One))
-        {
-            Camera.main.GetComponent<CinemachineFreeLook>().m_YAxis = ;
-        }
-        */
 
         if (leftStick.x != 0.0f || leftStick.y != 0.0f)
         {
@@ -383,11 +382,11 @@ public class PlayerScript : MonoBehaviour
         // If had more than a certain amount of food
         if (cheeseHeld)
         {
-            SceneManager.LoadScene("win");
+            UIcontrol.ChangeMenuMode(MenuController.MenuMode.WINSCREEN);
         }
         else
         {
-            Dead();
+            UIcontrol.ChangeMenuMode(MenuController.MenuMode.LOSESCREEN);
         }
     }
 

@@ -25,6 +25,7 @@ public class SoundSystem : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        DontDestroyOnLoad(this);
         basicAudio.volume = 1;
         dangerAudio.volume = 0;
 

@@ -88,7 +88,11 @@ public class PlayerScript : MonoBehaviour
     void Awake()
     {
         animator = animatorChild.GetComponent<Animator>();
-        UIcontrol = GameObject.FindGameObjectWithTag("UIObject").GetComponent<MenuController>();
+        var UI = GameObject.FindGameObjectWithTag("UIObject");
+        if (UI)
+        {
+            UIcontrol = UI.GetComponent<MenuController>();
+        }
     }
 
     void FixedUpdate()
@@ -395,70 +399,47 @@ public class PlayerScript : MonoBehaviour
     /// </summary>
     public void Dead()
     {
-        SceneManager.LoadScene("lose");
+        //SceneManager.LoadScene("lose");
+        GameObject.Find("UI").GetComponent<MenuController>().ReturnToMenu();
     }
 
     void ChangeAnimation(Animations i)
     {
-        switch(i)
+        animator.SetBool("Idle", false);
+        animator.SetBool("Walk", false);
+        animator.SetBool("Run", false);
+        animator.SetBool("Sense", false);
+        animator.SetBool("CheeseWalk", false);
+        animator.SetBool("CheeseIdle", false);
+        switch (i)
         {
             case Animations.IDLE:
                 {
                     animator.SetBool("Idle", true);
-                    animator.SetBool("Walk", false);
-                    animator.SetBool("Run", false);
-                    animator.SetBool("Sense", false);
-                    animator.SetBool("CheeseWalk", false);
-                    animator.SetBool("CheeseIdle", false);
                     break;
                 }
             case Animations.WALK:
                 {
-                    animator.SetBool("Idle", false);
                     animator.SetBool("Walk", true);
-                    animator.SetBool("Run", false);
-                    animator.SetBool("Sense", false);
-                    animator.SetBool("CheeseWalk", false);
-                    animator.SetBool("CheeseIdle", false);
                     break;
                 }
             case Animations.RUN:
                 {
-                    animator.SetBool("Idle", false);
-                    animator.SetBool("Walk", false);
                     animator.SetBool("Run", true);
-                    animator.SetBool("Sense", false);
-                    animator.SetBool("CheeseWalk", false);
-                    animator.SetBool("CheeseIdle", false);
                     break;
                 }
             case Animations.SENSE:
                 {
-                    animator.SetBool("Idle", false);
-                    animator.SetBool("Walk", false);
-                    animator.SetBool("Run", false);
                     animator.SetBool("Sense", true);
-                    animator.SetBool("CheeseWalk", false);
-                    animator.SetBool("CheeseIdle", false);
                     break;
                 }
             case Animations.CHEESEWALK:
                 {
-                    animator.SetBool("Idle", false);
-                    animator.SetBool("Walk", false);
-                    animator.SetBool("Run", false);
-                    animator.SetBool("Sense", false);
                     animator.SetBool("CheeseWalk", true);
-                    animator.SetBool("CheeseIdle", false);
                     break;
                 }
             case Animations.CHEESEIDLE:
                 {
-                    animator.SetBool("Idle", false);
-                    animator.SetBool("Walk", false);
-                    animator.SetBool("Run", false);
-                    animator.SetBool("Sense", false);
-                    animator.SetBool("CheeseWalk", false);
                     animator.SetBool("CheeseIdle", true);
                     break;
                 }

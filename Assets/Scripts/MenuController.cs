@@ -238,11 +238,11 @@ public class MenuController : MonoBehaviour
             default:
                 break;
         }
-
+        currentLevel++;
         ChangeMenuMode(MenuMode.NONE);
     }
 
-    void ReturnToMenu()
+    public void ReturnToMenu()
     {
         currentLevel = 1;
         ChangeMenuMode(MenuMode.MAINMENU);

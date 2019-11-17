@@ -400,7 +400,7 @@ public class PlayerScript : MonoBehaviour
     public void Dead()
     {
         //SceneManager.LoadScene("lose");
-        GameObject.Find("UI").GetComponent<MenuController>().ReturnToMenu();
+        GameObject.Find("UI").GetComponent<MenuController>().ChangeMenuMode(MenuController.MenuMode.LOSESCREEN);
     }
 
     void ChangeAnimation(Animations i)

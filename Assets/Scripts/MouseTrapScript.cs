@@ -11,8 +11,8 @@ public class MouseTrapScript : MonoBehaviour
     public static bool killedByTrap = false;
 
     // Serialized
-    [SerializeField] Mesh trapReadyModel;
-    [SerializeField] Mesh trapSprungModel;
+    //[SerializeField] Mesh trapReadyModel;
+    //[SerializeField] Mesh trapSprungModel;
 
     // Audio
     [SerializeField] AudioSource snapSfx;
@@ -30,7 +30,6 @@ public class MouseTrapScript : MonoBehaviour
             if (collision.collider.tag == "Rat")
             {
                 // Collide with rat
-                snapSfx.Play();
 
                 collision.collider.GetComponent<RatNavScript>().Killed();
 
@@ -41,6 +40,7 @@ public class MouseTrapScript : MonoBehaviour
                 // Collider with player
                 killedByTrap = true;
                 collision.collider.GetComponent<PlayerScript>().Dead();
+
                 TriggerTrap();
             }
         }
@@ -48,8 +48,10 @@ public class MouseTrapScript : MonoBehaviour
 
     void TriggerTrap()
     {
-        this.GetComponent<MeshFilter>().mesh = trapSprungModel;
+        //this.GetComponent<MeshFilter>().mesh = trapSprungModel;
 
+        snapSfx.Play();
+        GetComponentInChildren<Animator>().SetTrigger("Snap");
         isActive = false;
 
         //Destroy(this.gameObject);

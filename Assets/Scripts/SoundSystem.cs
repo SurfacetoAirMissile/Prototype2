@@ -53,13 +53,16 @@ public class SoundSystem : MonoBehaviour
         {
             heartAudio.pitch = 1.0f;
         }
+        else if (enemy.GetComponent<RatNavScript>().currentState == RatNavScript.ratStates.dead)
+        {
+            heartAudio.pitch = 1.0f;
+        }
         // If there is an enemy close by, change pitch depending on how close they are
         else
         {
             heartMultiply = (1/enDist) * 2;
             heartMultiply = Mathf.Clamp(heartMultiply, 0.0f, 1.5f);
-                
-
+            
             heartAudio.pitch = 1.0f + heartMultiply;
         }
 

@@ -35,18 +35,18 @@ public class MouseTrapScript : MonoBehaviour
 
                 TriggerTrap();
             }
-            if (collision.collider.tag == "Player")
-            {
+            //if (collision.collider.tag == "Player")
+            //{
                 // Collider with player
-                killedByTrap = true;
-                collision.collider.GetComponent<PlayerScript>().Dead();
+                //killedByTrap = true;
+                //collision.collider.GetComponent<PlayerScript>().Dead();
 
-                TriggerTrap();
-            }
+                //TriggerTrap();
+            //}
         }
     }
 
-    void TriggerTrap()
+    public void TriggerTrap()
     {
         //this.GetComponent<MeshFilter>().mesh = trapSprungModel;
 
@@ -55,5 +55,13 @@ public class MouseTrapScript : MonoBehaviour
         isActive = false;
 
         //Destroy(this.gameObject);
+    }
+
+    public void MouseTrigger()
+    {
+        killedByTrap = true;
+        GameObject.Find("Player").GetComponent<PlayerScript>().Dead();
+
+        TriggerTrap();
     }
 }

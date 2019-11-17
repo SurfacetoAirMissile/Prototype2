@@ -25,7 +25,7 @@ public class SoundSystem : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
         basicAudio.volume = 1;
         dangerAudio.volume = 0;
 
@@ -40,7 +40,7 @@ public class SoundSystem : MonoBehaviour
     {
         BackgroundMusic();
 
-        RandomSoundEffects();
+        //RandomSoundEffects();
 
         // Play heart beat
         if (!heartAudio.isPlaying)
@@ -53,13 +53,16 @@ public class SoundSystem : MonoBehaviour
         {
             heartAudio.pitch = 1.0f;
         }
+        else if (enemy.GetComponent<RatNavScript>().currentState == RatNavScript.ratStates.dead)
+        {
+            heartAudio.pitch = 1.0f;
+        }
         // If there is an enemy close by, change pitch depending on how close they are
         else
         {
             heartMultiply = (1/enDist) * 2;
             heartMultiply = Mathf.Clamp(heartMultiply, 0.0f, 1.5f);
-                
-
+            
             heartAudio.pitch = 1.0f + heartMultiply;
         }
 

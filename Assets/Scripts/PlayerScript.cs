@@ -26,6 +26,9 @@ public class PlayerScript : MonoBehaviour
     public Vector3 velocity = new Vector3(0, 0, 0);
     public bool cheeseHeld = false;
 
+    public bool onTrap = false;
+    GameObject trap;
+
     public enum playerStates
     {
         walk,
@@ -255,6 +258,12 @@ public class PlayerScript : MonoBehaviour
             speed = sSpeed;
         }
 
+        if (onTrap)
+        {
+            Dead();
+            trap.GetComponent<MouseTrapScript>().MouseTrigger();
+        }
+
         // Horiztonal movement
         MovementV3();
     }
@@ -353,14 +362,20 @@ public class PlayerScript : MonoBehaviour
                 Dead();
             }
         }
+
+        if (collision.collider.tag == "Trap")
+        {
+            onTrap = true;
+            trap = collision.gameObject;
+        }
     }
 
-    void OnTriggerExit(Collider other)
+    private void OnCollisionExit(Collision collision)
     {
-        if (other.tag == "CameraZone")
+        if (collision.collider.tag == "Trap")
         {
-            //GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
-            //camera.GetComponent<CameraScript>().UpdatePlayerPosition(other.gameObject.GetComponent<BoxCollider>(), false);
+            onTrap = false;
+            trap = null;
         }
     }
 
@@ -400,7 +415,8 @@ public class PlayerScript : MonoBehaviour
     public void Dead()
     {
         //SceneManager.LoadScene("lose");
-        GameObject.Find("UI").GetComponent<MenuController>().ReturnToMenu();
+        animator.speed = 0.0f;
+        GameObject.Find("UI").GetComponent<MenuController>().ChangeMenuMode(MenuController.MenuMode.LOSESCREEN);
     }
 
     void ChangeAnimation(Animations i)

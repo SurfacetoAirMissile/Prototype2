@@ -18,6 +18,11 @@ public class MenuController : MonoBehaviour
     public MenuMode currentMenu = MenuMode.MAINMENU;
     public uint currentLevel = 1;
 
+    // time to wait and timer for debug button to send to next level
+    float debugNextLevel = 0.5f;
+    float debugNextLevelTimer = 0.5f;
+
+
     // Serialized
     [SerializeField] Sprite[] playSprites; // Not selected, selected
     [SerializeField] Sprite[] continueSprites; // Not selected, selected
@@ -42,6 +47,22 @@ public class MenuController : MonoBehaviour
     void FixedUpdate()
     {
         if (this.GetComponent<Canvas>().worldCamera == null) { this.GetComponent<Canvas>().worldCamera = Camera.main; }
+
+        debugNextLevelTimer += Time.deltaTime;
+
+        // Debug NEXT LEVEL
+        if (debugNextLevelTimer >= debugNextLevel)
+        {
+            if (Input.GetKeyDown("n"))
+            {
+                debugNextLevelTimer = 0.0f;
+                LoadNextLevel();
+            }
+        }
+
+            
+        
+
 
         UpdateTimer();
 

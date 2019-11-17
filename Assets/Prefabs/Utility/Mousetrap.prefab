@@ -101,11 +101,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5564623231481296149}
   - component: {fileID: 3486496291869626147}
-  - component: {fileID: 7160174257149899738}
-  - component: {fileID: 595380693879332364}
   - component: {fileID: 595380693879332365}
   - component: {fileID: 8473644460446723018}
   - component: {fileID: 5211065976074431622}
+  - component: {fileID: 7570493667312274259}
   m_Layer: 0
   m_Name: Mousetrap
   m_TagString: Trap
@@ -137,57 +136,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8890908858793510662}
   m_Mesh: {fileID: -7843526606762953986, guid: 3e286b5bcd46ce047a4189f57ab5fc00, type: 3}
---- !u!23 &7160174257149899738
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8890908858793510662}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 1b983c19b074b114cbf475be3b26d77a, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!64 &595380693879332364
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8890908858793510662}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: -7843526606762953986, guid: 3e286b5bcd46ce047a4189f57ab5fc00, type: 3}
 --- !u!114 &595380693879332365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,10 +148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffcfa967e04e3024ab3c9d8d66b2d779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trapReadyModel: {fileID: 1440231890541431352, guid: 7e5e5f4b95ecc0b4e8a4ca21a451e907,
-    type: 3}
-  trapSprungModel: {fileID: 771464901436611544, guid: 879831aa7f2883147a83a3c8225223ab,
-    type: 3}
   snapSfx: {fileID: 8473644460446723018}
 --- !u!82 &8473644460446723018
 AudioSource:
@@ -309,11 +253,24 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8890908858793510662}
   m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1.0128971, y: 0.1371491, z: 0.8034444}
+  m_Center: {x: -0.010483116, y: 0.13521254, z: -0.2856362}
+--- !u!65 &7570493667312274259
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8890908858793510662}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.1467744, y: 0.32252342, z: 1.9496512}
-  m_Center: {x: 0, y: 0.16126171, z: 0.170995}
+  m_Size: {x: 1.2357011, y: 0.06738186, z: 2.0215464}
+  m_Center: {x: 0.0006573275, y: 0.032824576, z: 0.1924634}
 --- !u!1001 &2834482547053530997
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -396,6 +353,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: -6057140222963153312, guid: a33509e4417b48a4a98c121365a53fd4,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 7579412d699303b4a98e200486ba1204, type: 2}
     - target: {fileID: 7689187037355567660, guid: a33509e4417b48a4a98c121365a53fd4,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

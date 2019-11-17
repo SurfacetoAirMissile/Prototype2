@@ -49,7 +49,11 @@ public class SoundSystem : MonoBehaviour
         }
 
         // If there is no enemy close, play heartbeat normally
-        if (enemy == null)
+        if (GameObject.Find("Player").GetComponent<PlayerScript>().isDead)
+        {
+            heartAudio.pitch = 0.0f;
+        }
+        else if (enemy == null)
         {
             heartAudio.pitch = 1.0f;
         }

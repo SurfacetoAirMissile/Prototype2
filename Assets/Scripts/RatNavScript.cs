@@ -75,6 +75,13 @@ public class RatNavScript : MonoBehaviour
         {
             Debug.DrawRay(transform.position, GameObject.Find("Player").transform.position - transform.position, Color.red);
         }
+
+
+        if (GameObject.Find("Player").GetComponent<PlayerScript>().killedByRat)
+        {
+            if (!thisAgent.isStopped) { thisAgent.isStopped = true; }
+            return;
+        }
         // state machine
         switch (currentState)
         {
@@ -158,6 +165,13 @@ public class RatNavScript : MonoBehaviour
                     currentState = ratStates.patrol;
                     timeSpottingPlayer = 0.0f;
                 }
+
+
+                if (GameObject.Find("Player").GetComponent<PlayerScript>().killedByRat)
+                {
+                    thisAgent.isStopped = true;
+                }
+
                 break;
             case ratStates.dead:
                 thisAgent.isStopped = true;

@@ -620,7 +620,7 @@ MonoBehaviour:
   m_YAxisRecentering:
     m_enabled: 1
     m_WaitTime: 1
-    m_RecenteringTime: 1
+    m_RecenteringTime: 3
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_XAxis:

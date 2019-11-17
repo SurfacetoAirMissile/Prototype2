@@ -47,7 +47,7 @@ public class PlayerScript : MonoBehaviour
     /// <summary>
     /// Walk Speed
     /// </summary>
-    const float wSpeed = 18.5f;
+    const float wSpeed = 12f;
     /// <summary>
     /// Sprint Speed
     /// </summary>

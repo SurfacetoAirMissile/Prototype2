@@ -137,7 +137,13 @@ public class RatNavScript : MonoBehaviour
                     thisAgent.isStopped = false;
                     timeSinceSawPlayer = 0.0f;
                 }
-                agentTarget = GameObject.Find("Player").transform.position;
+                if (NavMesh.SamplePosition(GameObject.Find("Player").transform.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+                {
+                    agentTarget = hit.position;
+                }
+
+
+                //agentTarget = GameObject.Find("Player").transform.position;
                 //RotateTowardsPosXZ(GameObject.Find("Player").transform.position);
                 if (playerInSight)
                 {

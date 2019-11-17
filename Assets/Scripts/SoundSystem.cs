@@ -25,7 +25,7 @@ public class SoundSystem : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
         basicAudio.volume = 1;
         dangerAudio.volume = 0;
 
@@ -40,7 +40,7 @@ public class SoundSystem : MonoBehaviour
     {
         BackgroundMusic();
 
-        RandomSoundEffects();
+        //RandomSoundEffects();
 
         // Play heart beat
         if (!heartAudio.isPlaying)

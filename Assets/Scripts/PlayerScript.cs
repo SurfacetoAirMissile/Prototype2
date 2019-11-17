@@ -22,13 +22,13 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] AudioSource munchSfx;
 
     // Public
-    public static bool killedByRat = false;
+    public bool killedByRat = false;
     public Vector3 velocity = new Vector3(0, 0, 0);
     public bool cheeseHeld = false;
 
     public bool onTrap = false;
     GameObject trap;
-
+    public bool isDead = false;
     public enum playerStates
     {
         walk,
@@ -359,6 +359,7 @@ public class PlayerScript : MonoBehaviour
             if (collision.gameObject.GetComponent<RatNavScript>().currentState != RatNavScript.ratStates.dead)
             {
                 killedByRat = true;
+                munchSfx.Play();
                 Dead();
             }
         }
@@ -415,6 +416,7 @@ public class PlayerScript : MonoBehaviour
     public void Dead()
     {
         //SceneManager.LoadScene("lose");
+        isDead = true;
         animator.speed = 0.0f;
         GameObject.Find("UI").GetComponent<MenuController>().ChangeMenuMode(MenuController.MenuMode.LOSESCREEN);
     }

@@ -176,6 +176,7 @@ public class RatNavScript : MonoBehaviour
             case ratStates.dead:
                 thisAgent.isStopped = true;
                 GetComponentInChildren<Animator>().enabled = false;
+                GetComponentInChildren<Light>().enabled = false;
                 break;
             default:
                 break;

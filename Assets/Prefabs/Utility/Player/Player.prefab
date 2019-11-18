@@ -80,9 +80,11 @@ MonoBehaviour:
     type: 3}
   heldCheeseObject: {fileID: 8255077736299252302}
   munchSfx: {fileID: 4533918967139074328}
+  killedByRat: 0
   velocity: {x: 0, y: 0, z: 0}
   cheeseHeld: 0
   onTrap: 0
+  isDead: 0
   currentState: 2
 --- !u!136 &6460460677315878841
 CapsuleCollider:
@@ -772,11 +774,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4759316298941637470}
     m_Modifications:
-    - target: {fileID: 7761110680555190447, guid: c50d5da952419014f8ca1cc8824c621d,
-        type: 3}
-      propertyPath: m_Name
-      value: Cone
-      objectReference: {fileID: 0}
     - target: {fileID: 6768444956860058300, guid: c50d5da952419014f8ca1cc8824c621d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -846,6 +843,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7761110680555190447, guid: c50d5da952419014f8ca1cc8824c621d,
+        type: 3}
+      propertyPath: m_Name
+      value: Cone
       objectReference: {fileID: 0}
     - target: {fileID: 8325421813608303731, guid: c50d5da952419014f8ca1cc8824c621d,
         type: 3}
@@ -1236,7 +1238,7 @@ PrefabInstance:
     - target: {fileID: 8418364430395446750, guid: 6ab4eecbc2e16da4e8ce875bf8428107,
         type: 3}
       propertyPath: m_CastShadows
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8375762072047878537, guid: 6ab4eecbc2e16da4e8ce875bf8428107,
         type: 3}

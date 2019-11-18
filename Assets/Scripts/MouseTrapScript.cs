@@ -21,7 +21,7 @@ public class MouseTrapScript : MonoBehaviour
     /// <summary>
     /// Mouse trap is active and is able to be triggered
     /// </summary>
-    bool isActive = true;
+    public bool isActive = true;
 
     void OnCollisionEnter(Collision collision)
     {
@@ -52,6 +52,7 @@ public class MouseTrapScript : MonoBehaviour
 
         snapSfx.Play();
         GetComponentInChildren<Animator>().SetTrigger("Snap");
+        this.tag = "SprungTrap";
         isActive = false;
 
         //Destroy(this.gameObject);
